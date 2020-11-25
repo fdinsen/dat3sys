@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import utils.APIKeyHandler;
 import utils.HttpUtils;
 
 /**
@@ -23,7 +24,6 @@ public class YoutubeFacade {
     private static YoutubeFacade instance;
     private static EntityManagerFactory emf;
     private static String url;
-    private static String key = "AIzaSyAh5jhxPF7-2j_dEpvxc6dz76H7XWs6gFE";
     private static Gson GSON = new Gson();
 
     //Private Constructor to ensure Singleton
@@ -64,7 +64,7 @@ public class YoutubeFacade {
             throw new NoResult(query);
         } else {
             try {
-                String json = HttpUtils.fetchData(getSearchURL(query, key));
+                String json = HttpUtils.fetchData(getSearchURL(query, APIKeyHandler.getYouTubeKey()));
                 YTSearchResultDTO result = GSON.fromJson(json, YTSearchResultDTO.class);
                 SearchResultsDTO dto = new SearchResultsDTO(result);
                 if(dto.getAll().isEmpty()) {
