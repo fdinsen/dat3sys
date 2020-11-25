@@ -5,6 +5,7 @@
  */
 package dto;
 
+import dto.internaldto.TwitchSearchResultsDTO;
 import dto.internaldto.YTSearchResultDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,15 @@ public class SearchResultsDTO {
             String channelId = sr.getItems().get(i).getSnippet().getChannelId();
             String name = sr.getItems().get(i).getSnippet().getTitle();
             String pfpurl = sr.getItems().get(i).getSnippet().getThumbnails().getHigh().getUrl();
+            all.add(new SearchResultDTO(channelId, name, pfpurl));
+        }
+    }
+
+    public SearchResultsDTO(TwitchSearchResultsDTO sr) {
+        for(int i = 0; i < sr.getChannels().size(); i++) {
+            String channelId = sr.getChannels().get(i).getId().toString();
+            String name = sr.getChannels().get(i).getDisplayName();
+            String pfpurl = sr.getChannels().get(i).getLogo();
             all.add(new SearchResultDTO(channelId, name, pfpurl));
         }
     }
