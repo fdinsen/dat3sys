@@ -20,8 +20,7 @@ public class APIKeyHandler {
 
     public static String getYouTubeKey() {
         if (youTubeKey == null) {
-            boolean isDeployed = (System.getenv("DEPLOYED") != null);
-            if (isDeployed) {
+            if (System.getenv("YTKey") != null) {
                 youTubeKey = System.getenv("YTKey");
             } else {
                 try {
@@ -43,7 +42,7 @@ public class APIKeyHandler {
     public static String getTwitchKey() {
         if (twitchKey == null) {
             boolean isDeployed = (System.getenv("DEPLOYED") != null);
-            if (isDeployed) {
+            if (System.getenv("TWITCHKey") != null) {
                 twitchKey = System.getenv("TWITCHKey");
             } else {
                 try {
