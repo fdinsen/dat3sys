@@ -11,6 +11,6 @@ package errorhandling;
  */
 public class NoResult extends Exception {
     public NoResult(String query) {
-        super("No results found for search term \"" + query + "\"");
+        super("No results found for search term '" + query + "'");
     }
 }
