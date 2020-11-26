@@ -1,6 +1,7 @@
 package rest;
 
 import entities.RenameMe;
+import facades.YoutubeFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test;
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
 
-public class RenameMeResourceTest {
+public class YouTubeResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
@@ -33,6 +34,7 @@ public class RenameMeResourceTest {
     private static EntityManagerFactory emf;
 
     static HttpServer startServer() {
+        YoutubeFacade.runThroughGrizzly();
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
     }
@@ -79,7 +81,7 @@ public class RenameMeResourceTest {
 
     @Test
     public void testServerIsUp() {
-        given().when().get("/xxx").then().statusCode(200);
+        given().when().get("/youtube").then().statusCode(200);
     }
 
     //This test assumes the database contains two rows
@@ -87,7 +89,7 @@ public class RenameMeResourceTest {
     public void testDummyMsg() throws Exception {
         given()
                 .contentType("application/json")
-                .get("/xxx/").then()
+                .get("/youtube/").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("msg", equalTo("Hello World"));
@@ -97,9 +99,59 @@ public class RenameMeResourceTest {
     public void testCount() throws Exception {
         given()
                 .contentType("application/json")
-                .get("/xxx/count").then()
+                .get("/youtube/count").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("count", equalTo(2));
     }
+    
+    @Test
+    public void testSearchYouTubeOnID() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/search/pewdiepie").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("all[0].id", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
+    }
+    
+    @Test
+    public void testSearchYouTubeOnName() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/search/pewdiepie").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("all[0].name", equalTo("PewDiePie"));
+    }
+    
+    @Test
+    public void testSearchYouTubeOnPfpUrl() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/search/pewdiepie").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("all[0].profilePicUrl", equalTo("https://yt3.ggpht.com/ytc/AAUvwng76cTETu1glc_8o4UBUiFL2v-m3818ACnK0JLFPA=s800-c-k-c0xffffffff-no-rj-mo"));
+    }
+    
+    @Test
+    public void testSearchYouTubeOnEmptyString() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/search/").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
+    
+    @Test
+    public void testSearchYouTubeOnNoResults() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/search/adhou").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("message", equalTo("No results found for search term 'adhou'"));
+    }
+    
 }
