@@ -25,6 +25,7 @@ public class YoutubeFacade {
     private static EntityManagerFactory emf;
     private static String url;
     private static Gson GSON = new Gson();
+    private static boolean runningThroughGrizzly = false;
 
     //Private Constructor to ensure Singleton
     private YoutubeFacade() {
@@ -64,10 +65,12 @@ public class YoutubeFacade {
             throw new NoResult(query);
         } else {
             try {
-                String json = HttpUtils.fetchData(getSearchURL(query, APIKeyHandler.getYouTubeKey()));
+                String key = APIKeyHandler.getYouTubeKey();
+                String yturl = getSearchURL(query, key);
+                String json = HttpUtils.fetchData(yturl);
                 YTSearchResultDTO result = GSON.fromJson(json, YTSearchResultDTO.class);
                 SearchResultsDTO dto = new SearchResultsDTO(result);
-                if(dto.getAll().isEmpty()) {
+                if (dto.getAll().isEmpty()) {
                     throw new NoResult(query);
                 }
                 return dto;
@@ -80,9 +83,26 @@ public class YoutubeFacade {
     }
 
     private String getSearchURL(String query, String key) {
-        String url1 = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=";
-        String url2 = "&type=channel&key=";
-        return url1 + query + url2 + key;
+        if (isJUnitTest() || runningThroughGrizzly) {
+            return "https://fdinsen.com/testServerReplacement/api/xxx/ytsearch/" + query;
+        } else {
+            String url1 = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=";
+            String url2 = "&type=channel&key=";
+            return url1 + query + url2 + key;
+        }
+    }
+
+    public static boolean isJUnitTest() {
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            if (element.getClassName().startsWith("org.junit.")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static void runThroughGrizzly() {
+        runningThroughGrizzly = true;
     }
 
 }
