@@ -1,9 +1,9 @@
 package facades;
 
 import dto.SearchResultsDTO;
+import dto.TwitchChannelDTO;
 import errorhandling.NoResult;
 import org.junit.jupiter.api.*;
-import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -18,7 +18,6 @@ public class TwitchFacadeTest {
 
     @BeforeAll
     public static void setUpClass() {
-        emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = TwitchFacade.getTwitchFacade(emf);
     }
 
@@ -78,6 +77,72 @@ public class TwitchFacadeTest {
 
         assertThrows = Assertions.assertThrows(NoResult.class, () -> {
             SearchResultsDTO returned = facade.searchTwitch("aofhouasougaoughaåofascuuasd");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+
+    @Test
+    public void testGetTwitchChannelOnId() throws NoResult {
+        String expectedID = "27686136";
+
+        TwitchChannelDTO returned = facade.getTwitchChannel(expectedID);
+
+        String actualID = returned.getId();
+
+        assertEquals(expectedID, actualID);
+    }
+
+
+    @Test
+    public void testGetTwitchChannelOnTitle() throws NoResult {
+        String expectedName = "SivHD";
+
+        TwitchChannelDTO returned = facade.getTwitchChannel("27686136");
+
+        String actualName = returned.getTitle();
+
+        assertEquals(expectedName, actualName);
+    }
+
+
+    @Test
+    public void testGetTwitchChannelOnEmptyString() throws NoResult {
+        NoResult assertThrows;
+
+        assertThrows = Assertions.assertThrows(NoResult.class, () -> {
+            TwitchChannelDTO returned = facade.getTwitchChannel("");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testGetTwitchChannelOnNullString() throws NoResult {
+        NoResult assertThrows;
+
+        assertThrows = Assertions.assertThrows(NoResult.class, () -> {
+            TwitchChannelDTO returned = facade.getTwitchChannel(null);
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+
+    @Test
+    public void testGetTwitchChannelOnPfpURL() throws NoResult {
+        String expectedUrl = "https://static-cdn.jtvnw.net/jtv_user_pictures/a0732bbd-393f-4a16-bbe0-ac10a16b69df-profile_image-300x300.png";
+
+        TwitchChannelDTO returned = facade.getTwitchChannel("27686136");
+        String actualUrl = returned.getProfilePicUrl();
+
+        assertEquals(expectedUrl, actualUrl);
+    }
+
+    @Test
+    public void testGetTwitchChannelOnNoResults() throws NoResult {
+        NoResult assertThrows;
+
+        assertThrows = Assertions.assertThrows(NoResult.class, () -> {
+            TwitchChannelDTO returned = facade.getTwitchChannel("999999999");
         });
         Assertions.assertNotNull(assertThrows);
     }

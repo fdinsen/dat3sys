@@ -2,6 +2,7 @@ package facades;
 
 import com.google.gson.Gson;
 import dto.SearchResultsDTO;
+import dto.TwitchChannelDTO;
 import dto.internaldto.TwitchSearchResultsDTO;
 import errorhandling.NoResult;
 import java.io.IOException;
@@ -57,11 +58,29 @@ public class TwitchFacade {
                 }
                 return dto;
             } catch (IOException ex) {
-                //TODO throw an exception to show that the server can't be found
-                Logger.getLogger(YoutubeFacade.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TwitchFacade.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return null;
+    }
+
+    public TwitchChannelDTO getTwitchChannel(String id) throws NoResult {
+        if (id == null || "".equals(id)) {
+            throw new NoResult(id);
+        } else {
+            try {
+                String json = HttpUtils.fetchTwitchData("https://api.twitch.tv/kraken/channels/" + id);
+                TwitchChannelDTO twitchChannelDTO = GSON.fromJson(json, TwitchChannelDTO.class);
+
+                if(twitchChannelDTO.getId().isEmpty() || twitchChannelDTO.getId() == null) {
+                    throw new NoResult(id);
+                }
+                return twitchChannelDTO;
+            } catch (IOException ex) {
+                Logger.getLogger(TwitchFacade.class.getName()).log(Level.SEVERE, null, ex);
+                throw new NoResult(id);
+            }
+        }
     }
 
 }
