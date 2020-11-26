@@ -77,9 +77,9 @@ public class TwitchResourceTest {
             em.close();
         }
     }
-    
+
     @Test
-    public void testSearchYouTubeOnID() {
+    public void testSearchTwitchOnID() {
         given()
                 .contentType("application/json")
                 .get("/twitch/search/SivHD").then()
@@ -89,7 +89,7 @@ public class TwitchResourceTest {
     }
     
     @Test
-    public void testSearchYouTubeOnName() {
+    public void testSearchTwitchOnName() {
         given()
                 .contentType("application/json")
                 .get("/twitch/search/SivHD").then()
@@ -99,7 +99,7 @@ public class TwitchResourceTest {
     }
     
     @Test
-    public void testSearchYouTubeOnPfpUrl() {
+    public void testSearchTwitchOnPfpUrl() {
         given()
                 .contentType("application/json")
                 .get("/twitch/search/SivHD").then()
@@ -109,7 +109,7 @@ public class TwitchResourceTest {
     }
     
     @Test
-    public void testSearchYouTubeOnEmptyString() {
+    public void testSearchTwitchOnEmptyString() {
         given()
                 .contentType("application/json")
                 .get("/twitch/search/").then()
@@ -118,7 +118,7 @@ public class TwitchResourceTest {
     }
     
     @Test
-    public void testSearchYouTubeOnNoResults() {
+    public void testSearchTwitchOnNoResults() {
         given()
                 .contentType("application/json")
                 .get("/twitch/search/adhouahgbibeqibf8i2n2").then()
@@ -126,5 +126,45 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No results found for search term 'adhouahgbibeqibf8i2n2'"));
     }
-    
+
+
+    @Test
+    public void testGetTwitchChannelOnID() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/channel/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("id", equalTo("27686136"));
+    }
+
+    @Test
+    public void testGetTwitchChannelOnName() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/channel/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("title", equalTo("SivHD"));
+    }
+
+    @Test
+    public void testGetTwitchChannelOnPfpUrl() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/channel/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("profilePicUrl", equalTo("https://static-cdn.jtvnw.net/jtv_user_pictures/a0732bbd-393f-4a16-bbe0-ac10a16b69df-profile_image-300x300.png"));
+    }
+
+    @Test
+    public void testGetTwitchChannelOnGame() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/channel/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("game", equalTo("League of Legends"));
+    }
 }

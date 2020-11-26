@@ -29,4 +29,11 @@ public class TwitchResource {
     public Response searchYouTube(@PathParam("query") String query) throws NoResult {
         return Response.ok().entity(GSON.toJson(FACADE.searchTwitch(query))).build();
     }
+
+    @Path("channel/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTwitchChannel(@PathParam("id") String id) throws NoResult {
+        return Response.ok().entity(GSON.toJson(FACADE.getTwitchChannel(id))).build();
+    }
 }
