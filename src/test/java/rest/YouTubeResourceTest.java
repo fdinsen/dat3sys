@@ -1,6 +1,7 @@
 package rest;
 
 import entities.RenameMe;
+import facades.YoutubeFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -33,6 +34,7 @@ public class YouTubeResourceTest {
     private static EntityManagerFactory emf;
 
     static HttpServer startServer() {
+        YoutubeFacade.runThroughGrizzly();
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
     }
@@ -107,30 +109,30 @@ public class YouTubeResourceTest {
     public void testSearchYouTubeOnID() {
         given()
                 .contentType("application/json")
-                .get("/youtube/search/cgpgrey").then()
+                .get("/youtube/search/pewdiepie").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("all[0].id", equalTo("UC2C_jShtL725hvbm1arSV9w"));
+                .body("all[0].id", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
     }
     
     @Test
     public void testSearchYouTubeOnName() {
         given()
                 .contentType("application/json")
-                .get("/youtube/search/cgpgrey").then()
+                .get("/youtube/search/pewdiepie").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("all[0].name", equalTo("CGP Grey"));
+                .body("all[0].name", equalTo("PewDiePie"));
     }
     
     @Test
     public void testSearchYouTubeOnPfpUrl() {
         given()
                 .contentType("application/json")
-                .get("/youtube/search/gammarik").then()
+                .get("/youtube/search/pewdiepie").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("all[0].profilePicUrl", equalTo("https://yt3.ggpht.com/ytc/AAUvwnjx8z2LzkTZERwlyjBSkWBZqEv0w07wsXZDY06u=s800-c-k-c0xffffffff-no-rj-mo"));
+                .body("all[0].profilePicUrl", equalTo("https://yt3.ggpht.com/ytc/AAUvwng76cTETu1glc_8o4UBUiFL2v-m3818ACnK0JLFPA=s800-c-k-c0xffffffff-no-rj-mo"));
     }
     
     @Test
@@ -146,10 +148,10 @@ public class YouTubeResourceTest {
     public void testSearchYouTubeOnNoResults() {
         given()
                 .contentType("application/json")
-                .get("/youtube/search/adhouahgbibeqibf8i2n2").then()
+                .get("/youtube/search/adhou").then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
-                .body("message", equalTo("No results found for search term 'adhouahgbibeqibf8i2n2'"));
+                .body("message", equalTo("No results found for search term 'adhou'"));
     }
     
 }

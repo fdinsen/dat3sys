@@ -107,9 +107,9 @@ public class YoutubeFacadeTest {
     
     @Test
     public void testSearchYouTubeOnPfpURL() throws NoResult {
-        String expectedUrl = "https://yt3.ggpht.com/ytc/AAUvwnjx8z2LzkTZERwlyjBSkWBZqEv0w07wsXZDY06u=s800-c-k-c0xffffffff-no-rj-mo";
+        String expectedUrl = "https://yt3.ggpht.com/ytc/AAUvwng76cTETu1glc_8o4UBUiFL2v-m3818ACnK0JLFPA=s800-c-k-c0xffffffff-no-rj-mo";
         
-        SearchResultsDTO returned = facade.searchYouTube("gammarik");
+        SearchResultsDTO returned = facade.searchYouTube("pewdiepie");
         String actualUrl = returned.getAll().get(0).getProfilePicUrl();
         
         assertEquals(expectedUrl, actualUrl);
@@ -120,7 +120,7 @@ public class YoutubeFacadeTest {
         NoResult assertThrows;
         
         assertThrows = Assertions.assertThrows(NoResult.class, () -> {
-            SearchResultsDTO returned = facade.searchYouTube("aofhouasougaoughaåofascuuasd");
+            SearchResultsDTO returned = facade.searchYouTube("aofhouas");
         });
         Assertions.assertNotNull(assertThrows);
     }
