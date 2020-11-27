@@ -69,7 +69,7 @@ public class TwitchFacade {
             throw new NoResult(id);
         } else {
             try {
-                String json = HttpUtils.fetchTwitchData("https://api.twitch.tv/kraken/channels/" + id);
+                String json = HttpUtils.fetchTwitchData("https://api.twitch.tv/kraken/channels/" + id.toString());
                 TwitchChannelDTO twitchChannelDTO = GSON.fromJson(json, TwitchChannelDTO.class);
 
                 if(twitchChannelDTO.getId().isEmpty() || twitchChannelDTO.getId() == null) {
