@@ -86,7 +86,7 @@ public class YoutubeFacade {
     }
 
     public YoutubeResultDTO getChannelById(String id) throws NotFound {
-        if (id == null ||"".equals(id)) {
+        if (id == null || "".equals(id)) {
             throw new NotFound(id);
         } else {
             try {
@@ -98,16 +98,17 @@ public class YoutubeFacade {
                 YTChannelInfoDTO result = GSON.fromJson(json, YTChannelInfoDTO.class);
                 
                 YoutubeResultDTO dto = new YoutubeResultDTO(result);
-                if("".equals(dto.getCountry())){
+                if(dto.getTopicCategories().isEmpty()){
                     throw new NotFound(id);
                 }
                 return dto;
             } catch (IOException ex) {
                 Logger.getLogger(YoutubeFacade.class.getName()).log(Level.SEVERE, null, ex);
+                throw new NotFound(id);
+            } catch(IndexOutOfBoundsException e){
+                throw new NotFound(id);
             }
         }
-
-        return null;
     }
 
     private String getChannelUrl(String id, String key) {

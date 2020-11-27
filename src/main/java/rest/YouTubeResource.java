@@ -3,6 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import errorhandling.NoResult;
+import errorhandling.NotFound;
 import utils.EMF_Creator;
 import facades.YoutubeFacade;
 import javax.persistence.EntityManagerFactory;
@@ -41,5 +42,12 @@ public class YouTubeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchYouTube(@PathParam("query") String query) throws NoResult {
         return Response.ok().entity(GSON.toJson(FACADE.searchYouTube(query))).build();
+    }
+    
+    @Path("channel/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getChannelInfo(@PathParam("id") String id) throws NotFound{
+        return Response.ok().entity(GSON.toJson(FACADE.getChannelById(id))).build();
     }
 }

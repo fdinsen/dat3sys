@@ -5,6 +5,7 @@ import facades.YoutubeFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import javax.persistence.EntityManager;
@@ -153,5 +154,56 @@ public class YouTubeResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No results found for search term 'adhou'"));
     }
-    
+    @Test
+    public void testGetChannelTitle() {
+        String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/" + pewDiePieID)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("title", equalTo("PewDiePie"));
+    }
+
+    @Test
+    public void testGetChannelViews() {
+        String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/" + pewDiePieID)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("country", equalTo("US"));
+    }
+
+    @Test
+    public void testGetChannelTopicCategories() {
+        String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/" + pewDiePieID)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("topicCategories.size()", equalTo(3));
+    }
+
+    @Test
+    public void testGetChannelError() {
+        String wrongId = "";
+
+        given()
+                .contentType("application/json")
+                .get("http://localhost:8080/jpareststarter/api/youtube/channel/1111")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("code", equalTo(404))
+                .body("message", equalTo("No content found by id '1111'"));
+    }
 }
