@@ -113,7 +113,7 @@ public class YoutubeFacade {
 
     private String getChannelUrl(String id, String key) {
         if (isJUnitTest() || runningThroughGrizzly) {
-            return "https://fdinsen.com/testServerReplacement/api/xxx/ytget";
+            return "https://fdinsen.com/testServerReplacement/api/xxx/ytget/" + id;
         } else {
             String youtubeBase = "https://youtube.googleapis.com/youtube/v3/channels?part=status&part=statistics&part=id&part=contentDetails&part=brandingSettings&part=localizations&part=snippet&part=topicDetails&part=contentOwnerDetails";
             String idParameter = "&id=" + id;
