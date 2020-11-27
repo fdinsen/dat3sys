@@ -2,9 +2,12 @@ package facades;
 
 import com.google.gson.Gson;
 import dto.SearchResultsDTO;
+import dto.YoutubeResultDTO;
+import dto.internaldto.YTChannelInfoDTO;
 import dto.internaldto.YTSearchResultDTO;
 import entities.RenameMe;
 import errorhandling.NoResult;
+import errorhandling.NotFound;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -82,6 +85,42 @@ public class YoutubeFacade {
         return null;
     }
 
+    public YoutubeResultDTO getChannelById(String id) throws NotFound {
+        if (id == null ||"".equals(id)) {
+            throw new NotFound(id);
+        } else {
+            try {
+                String key = APIKeyHandler.getYouTubeKey();
+                String ytUrl = getChannelUrl(id, key);
+                
+                String json = HttpUtils.fetchData(ytUrl);
+                
+                YTChannelInfoDTO result = GSON.fromJson(json, YTChannelInfoDTO.class);
+                
+                YoutubeResultDTO dto = new YoutubeResultDTO(result);
+                if("".equals(dto.getCountry())){
+                    throw new NotFound(id);
+                }
+                return dto;
+            } catch (IOException ex) {
+                Logger.getLogger(YoutubeFacade.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return null;
+    }
+
+    private String getChannelUrl(String id, String key) {
+        if (isJUnitTest() || runningThroughGrizzly) {
+            return "https://fdinsen.com/testServerReplacement/api/xxx/ytget";
+        } else {
+            String youtubeBase = "https://youtube.googleapis.com/youtube/v3/channels?part=status&part=statistics&part=id&part=contentDetails&part=brandingSettings&part=localizations&part=snippet&part=topicDetails&part=contentOwnerDetails";
+            String idParameter = "&id=" + id;
+            String keyParameter = "&key=" + key;
+            return youtubeBase + idParameter + keyParameter;
+        }
+    }
+
     private String getSearchURL(String query, String key) {
         if (isJUnitTest() || runningThroughGrizzly) {
             return "https://fdinsen.com/testServerReplacement/api/xxx/ytsearch/" + query;
@@ -100,7 +139,7 @@ public class YoutubeFacade {
         }
         return false;
     }
-    
+
     public static void runThroughGrizzly() {
         runningThroughGrizzly = true;
     }
