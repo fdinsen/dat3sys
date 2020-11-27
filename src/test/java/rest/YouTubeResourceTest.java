@@ -199,7 +199,7 @@ public class YouTubeResourceTest {
 
         given()
                 .contentType("application/json")
-                .get("http://localhost:8080/jpareststarter/api/youtube/channel/1111")
+                .get("/youtube/channel/1111")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
