@@ -5,16 +5,14 @@ import dto.SearchResultsDTO;
 import dto.YoutubeResultDTO;
 import dto.internaldto.YTChannelInfoDTO;
 import dto.internaldto.YTSearchResultDTO;
-import entities.RenameMe;
 import errorhandling.NoResult;
 import errorhandling.NotFound;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 import utils.APIKeyHandler;
 import utils.HttpUtils;
 

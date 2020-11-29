@@ -2,9 +2,7 @@ package facades;
 
 import dto.SearchResultsDTO;
 import dto.YoutubeResultDTO;
-import dto.internaldto.YTSearchResultDTO;
 import utils.EMF_Creator;
-import entities.RenameMe;
 import errorhandling.NoResult;
 import errorhandling.NotFound;
 import javax.persistence.EntityManager;
@@ -44,16 +42,6 @@ public class YoutubeFacadeTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
-
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
     }
 
     @AfterEach
@@ -61,11 +49,6 @@ public class YoutubeFacadeTest {
 //        Remove any data after each test was run
     }
 
-    // TODO: Delete or change this method 
-    @Test
-    public void testAFacadeMethod() {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
-    }
 
     @Test
     public void testGetChannelTitle() throws NotFound {
