@@ -2,3 +2,7 @@
 **/nb-configuration.xml
 
 /nbproject/
+/.idea/
+
+twitch.key
+yt.key

@@ -3,25 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dto;
+package dto.internaldto;
 
 /**
  *
  * @author gamma
  */
-public class IpDTO extends GenericDTO{
-    String ip;
+public class UrlDTO {
+    String url;
 
-    public IpDTO(String ip) {
-        this.ip = ip;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
+    public UrlDTO() {
     }
     
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package errorhandling;
 
 import com.google.gson.Gson;
@@ -11,15 +16,14 @@ import javax.ws.rs.ext.Provider;
 
 /**
  *
- * @author lam@cphbusiness.dk
+ * @author gamma
  */
 @Provider
-public class NotFoundException implements ExceptionMapper<NotFound>{
-
-   static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+public class NoResultMapper implements ExceptionMapper<NoResult>{
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     
     @Override
-    public Response toResponse(NotFound exception) {
+    public Response toResponse(NoResult exception) {
         Logger.getLogger(NoResultMapper.class.getName())
                 .log(Level.FINE, null, exception);
         ExceptionDTO err = new ExceptionDTO(404,exception.getMessage());
@@ -29,4 +33,5 @@ public class NotFoundException implements ExceptionMapper<NotFound>{
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
+    
 }
