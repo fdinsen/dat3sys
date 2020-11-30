@@ -1,6 +1,5 @@
 package rest;
 
-import entities.RenameMe;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -27,7 +26,6 @@ public class TwitchResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-    private static RenameMe r1, r2;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -65,17 +63,6 @@ public class TwitchResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        r1 = new RenameMe("Some txt", "More text");
-        r2 = new RenameMe("aaa", "bbb");
-        try {
-            em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(r1);
-            em.persist(r2);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
     }
 
     @Test
