@@ -34,12 +34,10 @@ public class TwitchAnalytics implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long ta_id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "channel_name")
-    private String channelName;
+    private String id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -63,7 +61,7 @@ public class TwitchAnalytics implements Serializable {
     }
     
     public TwitchAnalytics(TwitchAnalyticsDTO twitch) {
-        channelName = twitch.getId();
+        this.id = twitch.getId();
         game = twitch.getGame();
         views = twitch.getViews();
         followers = twitch.getFollowers();
@@ -72,20 +70,12 @@ public class TwitchAnalytics implements Serializable {
     }
 
     
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getChannelName() {
-        return channelName;
-    }
-
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
     }
 
     public String getGame() {

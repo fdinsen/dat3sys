@@ -2,21 +2,24 @@ package facades;
 
 import com.google.gson.Gson;
 import dto.SearchResultsDTO;
+import dto.TwitchAnalyticsDTO;
 import dto.TwitchChannelDTO;
 import dto.internaldto.TwitchSearchResultsDTO;
+import entities.TwitchAnalytics;
+import entities.User;
 import errorhandling.NoResult;
 import java.io.IOException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import errorhandling.TooRecentSaveException;
 import utils.HttpUtils;
 
-/**
- *
- * Rename Class to a relevant name Add add relevant facade methods
- */
 public class TwitchFacade {
 
     private static TwitchFacade instance;
@@ -81,6 +84,51 @@ public class TwitchFacade {
                 throw new NoResult(id);
             }
         }
+    }
+
+    public List<TwitchAnalytics> saveTwitchAnalytics(String id) throws NoResult, TooRecentSaveException {
+                EntityManager em = getEntityManager();
+                //check time interval
+                List<TwitchAnalytics>   twitchAnalyticsList = em.createQuery(
+                                        "SELECT ta FROM TwitchAnalytics ta WHERE ta.id LIKE :id")
+                                        .setParameter("id", id)
+                                        .getResultList();
+
+                if(twitchAnalyticsList.size() > 0){
+                    //Check if latest entry is older than 1 minute
+                    Date currentDate = new Date();
+                    Date twitchDate = twitchAnalyticsList.get(twitchAnalyticsList.size() - 1).getSavedAt();
+                    long min1 = 60l * 1000;
+                    if(currentDate.before(new Date((twitchDate .getTime() + min1)))){
+                        throw new TooRecentSaveException();
+                    }
+
+                }
+
+
+
+                TwitchChannelDTO twitchChannelDTO = getTwitchChannel(id);
+
+
+                //Temp user
+                User user = em.find(User.class, "user");
+
+
+                TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date(), user);
+                TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO);
+
+                try{
+                    em.getTransaction().begin();
+                    em.persist(twitchAnalytics);
+                    em.getTransaction().commit();
+                }finally{
+                    em.close();
+                }
+                twitchAnalyticsList.add(twitchAnalytics);
+
+
+
+                return twitchAnalyticsList;
     }
 
 }

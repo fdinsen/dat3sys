@@ -2,10 +2,15 @@ package facades;
 
 import dto.SearchResultsDTO;
 import dto.TwitchChannelDTO;
+import entities.TwitchAnalytics;
 import errorhandling.NoResult;
+import errorhandling.TooRecentSaveException;
 import org.junit.jupiter.api.*;
+import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,6 +23,7 @@ public class TwitchFacadeTest {
 
     @BeforeAll
     public static void setUpClass() {
+        emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = TwitchFacade.getTwitchFacade(emf);
     }
 
@@ -143,6 +149,48 @@ public class TwitchFacadeTest {
 
         assertThrows = Assertions.assertThrows(NoResult.class, () -> {
             TwitchChannelDTO returned = facade.getTwitchChannel("999999999");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testSaveTwitchAnalyticsOnId() throws NoResult, TooRecentSaveException {
+        String expectedID = "27686136";
+
+        List<TwitchAnalytics> returned = facade.saveTwitchAnalytics(expectedID);
+
+        String actualID = returned.get(0).getId();
+
+        assertEquals(expectedID, actualID);
+    }
+
+    @Test
+    public void testSaveTwitchAnalyticsOnNoResults() throws NoResult {
+        NoResult assertThrows;
+
+        assertThrows = Assertions.assertThrows(NoResult.class, () -> {
+            facade.saveTwitchAnalytics("999999999");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testSaveTwitchAnalyticsOnNullString() throws NoResult {
+        NoResult assertThrows;
+
+        assertThrows = Assertions.assertThrows(NoResult.class, () -> {
+            facade.saveTwitchAnalytics(null);
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testSaveTwitchAnalyticsOnToRecentSave() throws TooRecentSaveException, NoResult {
+        TooRecentSaveException assertThrows;
+
+        assertThrows = Assertions.assertThrows(TooRecentSaveException.class, () -> {
+            facade.saveTwitchAnalytics("27686136");
+            facade.saveTwitchAnalytics("27686136");
         });
         Assertions.assertNotNull(assertThrows);
     }

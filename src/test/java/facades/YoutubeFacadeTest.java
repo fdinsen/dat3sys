@@ -2,6 +2,9 @@ package facades;
 
 import dto.SearchResultsDTO;
 import dto.YoutubeResultDTO;
+import entities.TwitchAnalytics;
+import entities.YouTubeAnalytics;
+import errorhandling.TooRecentSaveException;
 import utils.EMF_Creator;
 import errorhandling.NoResult;
 import errorhandling.NotFound;
@@ -15,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
@@ -168,6 +173,48 @@ public class YoutubeFacadeTest {
 
         assertThrows = Assertions.assertThrows(NoResult.class, () -> {
             SearchResultsDTO returned = facade.searchYouTube("aofhouas");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testSaveYoutubeAnalyticsOnId() throws NoResult, TooRecentSaveException, NotFound {
+        String expectedID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        List<YouTubeAnalytics> returned = facade.saveYoutubeAnalytics(expectedID);
+
+        String actualID = returned.get(0).getChannelId();
+
+        assertEquals(expectedID, actualID);
+    }
+
+    @Test
+    public void testSaveYoutubeAnalyticsOnNoResults() throws NotFound {
+        NotFound assertThrows;
+
+        assertThrows = Assertions.assertThrows(NotFound.class, () -> {
+            facade.saveYoutubeAnalytics("999999999");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testSaveYoutubeAnalyticsOnNullString() throws NotFound {
+        NotFound assertThrows;
+
+        assertThrows = Assertions.assertThrows(NotFound.class, () -> {
+            facade.saveYoutubeAnalytics(null);
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testSaveYoutubeAnalyticsOnToRecentSave() throws TooRecentSaveException, NoResult {
+        TooRecentSaveException assertThrows;
+
+        assertThrows = Assertions.assertThrows(TooRecentSaveException.class, () -> {
+            facade.saveYoutubeAnalytics("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+            facade.saveYoutubeAnalytics("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
         });
         Assertions.assertNotNull(assertThrows);
     }

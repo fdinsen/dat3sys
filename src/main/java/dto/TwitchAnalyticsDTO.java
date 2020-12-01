@@ -7,7 +7,6 @@ package dto;
 
 import entities.TwitchAnalytics;
 import entities.User;
-import entities.YouTubeAnalytics;
 import java.util.Date;
 
 /**
@@ -27,12 +26,21 @@ public class TwitchAnalyticsDTO {
     }
     
     public TwitchAnalyticsDTO(TwitchAnalytics twitch) {
-        id = twitch.getChannelName();
-        game = twitch.getGame();
-        views = twitch.getViews();
-        followers = twitch.getFollowers();
-        savedOnDate = twitch.getSavedAt();
-        savedBy = twitch.getSavedBy();
+        this.id = twitch.getId();
+        this.game = twitch.getGame();
+        this.views = twitch.getViews();
+        this.followers = twitch.getFollowers();
+        this.savedOnDate = twitch.getSavedAt();
+        this.savedBy = twitch.getSavedBy();
+    }
+
+    public TwitchAnalyticsDTO(TwitchChannelDTO twitch, Date savedOndate,User savedBy) {
+        this.id = twitch.getId();
+        this.game = twitch.getGame();
+        this.views = twitch.getViews();
+        this.followers = twitch.getFollowers();
+        this.savedOnDate = savedOndate;
+        this.savedBy = savedBy;
     }
 
     public String getId() {

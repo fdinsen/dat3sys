@@ -33,7 +33,16 @@ public class YouTubeAnalyticsDTO {
         savedOnDate = yt.getSavedAt();
         savedBy = yt.getSavedBy();
     }
-    
+
+    public YouTubeAnalyticsDTO(YoutubeResultDTO youTubeRes, Date date, User user) {
+        id = youTubeRes.getId();
+        views = youTubeRes.getViews();
+        subscribers = youTubeRes.getSubscribers();
+        videoCount = youTubeRes.getVideoCount();
+        savedOnDate = date;
+        savedBy = user;
+    }
+
 
     public String getId() {
         return id;
