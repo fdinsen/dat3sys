@@ -26,7 +26,7 @@ public class TwitchAnalyticsDTO {
     }
     
     public TwitchAnalyticsDTO(TwitchAnalytics twitch) {
-        this.id = twitch.getId();
+        this.id = twitch.getTwitch_id();
         this.game = twitch.getGame();
         this.views = twitch.getViews();
         this.followers = twitch.getFollowers();

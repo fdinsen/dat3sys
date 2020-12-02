@@ -154,4 +154,36 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("game", equalTo("League of Legends"));
     }
+
+    @Test
+    public void testSaveTwitchChannelOnSize() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(1));
+    }
+
+    @Test
+    public void testSaveTwitchChannelOnToRecent() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/27686136");
+
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT_409.getStatusCode());
+    }
+
+    @Test
+    public void testSaveTwitchChannelOnNotFound() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/999999999").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
 }

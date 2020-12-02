@@ -159,7 +159,7 @@ public class TwitchFacadeTest {
 
         List<TwitchAnalytics> returned = facade.saveTwitchAnalytics(expectedID);
 
-        String actualID = returned.get(0).getId();
+        String actualID = returned.get(0).getTwitch_id();
 
         assertEquals(expectedID, actualID);
     }

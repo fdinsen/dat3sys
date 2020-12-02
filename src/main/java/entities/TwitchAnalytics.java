@@ -34,10 +34,10 @@ public class TwitchAnalytics implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ta_id;
+    private Long id;
     @Basic(optional = false)
     @NotNull
-    private String id;
+    private String twitch_id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -61,7 +61,7 @@ public class TwitchAnalytics implements Serializable {
     }
     
     public TwitchAnalytics(TwitchAnalyticsDTO twitch) {
-        this.id = twitch.getId();
+        this.twitch_id = twitch.getId();
         game = twitch.getGame();
         views = twitch.getViews();
         followers = twitch.getFollowers();
@@ -70,12 +70,12 @@ public class TwitchAnalytics implements Serializable {
     }
 
     
-    public String getId() {
-        return id;
+    public String getTwitch_id() {
+        return twitch_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTwitch_id(String id) {
+        this.twitch_id = id;
     }
 
     public String getGame() {
@@ -129,7 +129,7 @@ public class TwitchAnalytics implements Serializable {
             return false;
         }
         TwitchAnalytics other = (TwitchAnalytics) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.twitch_id == null && other.twitch_id != null) || (this.twitch_id != null && !this.twitch_id.equals(other.twitch_id))) {
             return false;
         }
         return true;
@@ -137,7 +137,7 @@ public class TwitchAnalytics implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.YouTubeAnalytics[ id=" + id + " ]";
+        return "entities.YouTubeAnalytics[ id=" + twitch_id + " ]";
     }
     
 }

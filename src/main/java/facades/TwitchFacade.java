@@ -90,7 +90,7 @@ public class TwitchFacade {
                 EntityManager em = getEntityManager();
                 //check time interval
                 List<TwitchAnalytics>   twitchAnalyticsList = em.createQuery(
-                                        "SELECT ta FROM TwitchAnalytics ta WHERE ta.id LIKE :id")
+                                        "SELECT ta FROM TwitchAnalytics ta WHERE ta.twitch_id LIKE :id")
                                         .setParameter("id", id)
                                         .getResultList();
 
