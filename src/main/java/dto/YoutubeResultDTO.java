@@ -13,7 +13,7 @@ import java.util.List;
  * @author simon
  */
 public class YoutubeResultDTO {
-    
+    private String id;
     private String title;
     private String desc;
     private String profilePicURL;
@@ -24,6 +24,7 @@ public class YoutubeResultDTO {
     private List<String> topicCategories;
     
     public YoutubeResultDTO(YTChannelInfoDTO result) {
+        this.id = result.getItems().get(0).getSnippet().getChannelId();
         this.title = result.getItems().get(0).getSnippet().getTitle();
         this.desc = result.getItems().get(0).getSnippet().getDescription();
         this.profilePicURL = result.getItems().get(0).getSnippet().getThumbnails().getHigh().getUrl();
@@ -32,6 +33,14 @@ public class YoutubeResultDTO {
         this.subscribers = Long.parseLong(result.getItems().get(0).getStatistics().getSubscriberCount());
         this.videoCount = Long.parseLong(result.getItems().get(0).getStatistics().getVideoCount());
         this.topicCategories = result.getItems().get(0).getTopicDetails().getTopicCategories();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {

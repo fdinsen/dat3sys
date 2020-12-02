@@ -62,21 +62,12 @@ public class YouTubeAnalytics implements Serializable {
     }
     
     public YouTubeAnalytics(YouTubeAnalyticsDTO yt) {
-        channelId = yt.getId();
-        views = yt.getViews();
-        subscribers = yt.getSubscribers();
-        videoCount = yt.getVideoCount();
-        savedAt = yt.getSavedOnDate();
-        savedBy = yt.getSavedBy();
-    }
-    
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.channelId = yt.getId();
+        this.views = yt.getViews();
+        this.subscribers = yt.getSubscribers();
+        this.videoCount = yt.getVideoCount();
+        this.savedAt = yt.getSavedOnDate();
+        this.savedBy = yt.getSavedBy();
     }
 
     public String getChannelId() {
