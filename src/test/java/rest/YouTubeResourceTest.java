@@ -167,4 +167,36 @@ public class YouTubeResourceTest {
                 .body("code", equalTo(404))
                 .body("message", equalTo("No content found by id '1111'"));
     }
+
+    @Test
+    public void testSaveYoutubeChannelOnSize() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(1));
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnToRecent() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw").then()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT_409.getStatusCode());
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnNotFound() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/999999999").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
 }
