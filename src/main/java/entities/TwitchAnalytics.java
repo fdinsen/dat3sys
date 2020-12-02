@@ -37,7 +37,8 @@ public class TwitchAnalytics implements Serializable {
     private Long ta_id;
     @Basic(optional = false)
     @NotNull
-    private String id;
+    @Column(name = "channel_name")
+    private String channelName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -61,7 +62,7 @@ public class TwitchAnalytics implements Serializable {
     }
     
     public TwitchAnalytics(TwitchAnalyticsDTO twitch) {
-        this.id = twitch.getId();
+        this.channelName = twitch.getId();
         game = twitch.getGame();
         views = twitch.getViews();
         followers = twitch.getFollowers();
@@ -70,12 +71,12 @@ public class TwitchAnalytics implements Serializable {
     }
 
     
-    public String getId() {
-        return id;
+    public String getChannelName() {
+        return channelName;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 
     public String getGame() {
@@ -124,12 +125,12 @@ public class TwitchAnalytics implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the channelName fields are not set
         if (!(object instanceof TwitchAnalytics)) {
             return false;
         }
         TwitchAnalytics other = (TwitchAnalytics) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.channelName == null && other.channelName != null) || (this.channelName != null && !this.channelName.equals(other.channelName))) {
             return false;
         }
         return true;
@@ -137,7 +138,7 @@ public class TwitchAnalytics implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.YouTubeAnalytics[ id=" + id + " ]";
+        return "entities.YouTubeAnalytics[ id=" + channelName + " ]";
     }
     
 }
