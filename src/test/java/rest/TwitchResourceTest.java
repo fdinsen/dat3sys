@@ -212,6 +212,7 @@ public class TwitchResourceTest {
 
     @Test
     public void testViewTwitchAnalyticsOnSize() {
+        SetupTestAnalytics.setUpTwitchAnalytics(emf);
         String id = "SivHD";
         given()
                 .contentType("application/json")

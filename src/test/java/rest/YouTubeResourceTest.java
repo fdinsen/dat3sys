@@ -178,6 +178,7 @@ public class YouTubeResourceTest {
 
     @Test
     public void testViewYouTubeAnalyticsOnSize() {
+        SetupTestAnalytics.setUpYTAnalytics(emf);
         String id = "UC2C_jShtL725hvbm1arSV9w";
         given()
                 .contentType("application/json")
