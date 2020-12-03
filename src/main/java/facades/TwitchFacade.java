@@ -4,10 +4,13 @@ import com.google.gson.Gson;
 import dto.SearchResultsDTO;
 import dto.TwitchAnalyticsDTO;
 import dto.TwitchChannelDTO;
+import dto.YouTubeAnalyticsDTO;
 import dto.internaldto.TwitchSearchResultsDTO;
 import entities.TwitchAnalytics;
 import entities.User;
+import entities.YouTubeAnalytics;
 import errorhandling.NoResult;
+import errorhandling.NotFound;
 import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -18,6 +21,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import errorhandling.TooRecentSaveException;
+import java.util.ArrayList;
+import javax.persistence.TypedQuery;
 import utils.HttpUtils;
 
 public class TwitchFacade {
@@ -86,12 +91,12 @@ public class TwitchFacade {
         }
     }
 
-    public List<TwitchAnalytics> saveTwitchAnalytics(String id) throws NoResult, TooRecentSaveException {
+    public List<TwitchAnalytics> saveTwitchAnalytics(String channelName) throws NoResult, TooRecentSaveException {
                 EntityManager em = getEntityManager();
                 //check time interval
                 List<TwitchAnalytics>   twitchAnalyticsList = em.createQuery(
-                                        "SELECT ta FROM TwitchAnalytics ta WHERE ta.twitch_id LIKE :id")
-                                        .setParameter("id", id)
+                                        "SELECT ta FROM TwitchAnalytics ta WHERE ta.channelName LIKE :channelName")
+                                        .setParameter("channelName", channelName)
                                         .getResultList();
 
                 if(twitchAnalyticsList.size() > 0){
@@ -107,7 +112,7 @@ public class TwitchFacade {
 
 
 
-                TwitchChannelDTO twitchChannelDTO = getTwitchChannel(id);
+                TwitchChannelDTO twitchChannelDTO = getTwitchChannel(channelName);
 
 
                 //Temp user
@@ -129,6 +134,23 @@ public class TwitchFacade {
 
 
                 return twitchAnalyticsList;
+    }
+    
+    public List<TwitchAnalyticsDTO> getTwitchAnalytics(String channelName) throws NotFound {
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<TwitchAnalytics> query = em.createQuery("SELECT twitch FROM TwitchAnalytics twitch WHERE twitch.channelName = :channel ORDER BY twitch.savedAt", TwitchAnalytics.class);
+        query.setParameter("channel", channelName);
+        List<TwitchAnalyticsDTO> list = new ArrayList();
+        
+        query.getResultStream().forEach(element -> {
+            list.add(new TwitchAnalyticsDTO(element));
+        });
+        
+        if (list.isEmpty()) {
+            throw new NotFound("No content found by id " + channelName);
+        }
+        
+        return list;
     }
 
 }

@@ -18,6 +18,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import errorhandling.TooRecentSaveException;
+import java.util.ArrayList;
+import javax.persistence.TypedQuery;
 import utils.APIKeyHandler;
 import utils.HttpUtils;
 
@@ -166,6 +168,23 @@ public class YoutubeFacade {
 
 
         return youTubeAnalyticsList;
+    }
+    
+    public List<YouTubeAnalyticsDTO> getYouTubeAnalytics(String channelId) throws NotFound {
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<YouTubeAnalytics> query = em.createQuery("SELECT yt FROM YouTubeAnalytics yt WHERE yt.channelId = :channel ORDER BY yt.savedAt", YouTubeAnalytics.class);
+        query.setParameter("channel", channelId);
+        List<YouTubeAnalyticsDTO> list = new ArrayList();
+        
+        query.getResultStream().forEach(element -> {
+            list.add(new YouTubeAnalyticsDTO(element));
+        });
+        
+        if (list.isEmpty()) {
+            throw new NotFound("No content found by id " + channelId);
+        }
+        
+        return list;
     }
 
     public static boolean isJUnitTest() {

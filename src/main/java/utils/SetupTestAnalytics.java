@@ -21,6 +21,11 @@ public class SetupTestAnalytics {
 
     public static void main(String[] args) {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
+        setUpYTAnalytics(emf);
+        setUpTwitchAnalytics(emf);
+    }
+    
+    public static void setUpYTAnalytics(EntityManagerFactory emf) {
         EntityManager em = emf.createEntityManager();
         
         em.getTransaction().begin();
@@ -32,19 +37,19 @@ public class SetupTestAnalytics {
         YouTubeAnalyticsDTO ytdto2 = new YouTubeAnalyticsDTO();
         YouTubeAnalyticsDTO ytdto3 = new YouTubeAnalyticsDTO();
         
-        ytdto1.setId("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+        ytdto1.setId("UC2C_jShtL725hvbm1arSV9w");
         ytdto1.setViews(1012);
         ytdto1.setSubscribers(50);
         ytdto1.setVideoCount(45);
         ytdto1.setSavedBy(user);
         
-        ytdto2.setId("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+        ytdto2.setId("UC2C_jShtL725hvbm1arSV9w");
         ytdto2.setViews(1102);
         ytdto2.setSubscribers(52);
         ytdto2.setVideoCount(46);
         ytdto2.setSavedBy(user);
         
-        ytdto3.setId("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+        ytdto3.setId("UC2C_jShtL725hvbm1arSV9w");
         ytdto3.setViews(1150);
         ytdto3.setSubscribers(55);
         ytdto3.setVideoCount(48);
@@ -57,6 +62,16 @@ public class SetupTestAnalytics {
         em.persist(yt1);
         em.persist(yt2);
         em.persist(yt3);
+        
+        em.getTransaction().commit();
+    }
+    
+    public static void setUpTwitchAnalytics(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+        
+        em.getTransaction().begin();
+        
+        User user = em.find(User.class, "user");
         
         //Twitch
         TwitchAnalyticsDTO twitchdto1 = new TwitchAnalyticsDTO();
