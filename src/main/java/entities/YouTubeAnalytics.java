@@ -12,6 +12,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -61,13 +62,13 @@ public class YouTubeAnalytics implements Serializable {
     public YouTubeAnalytics() {
     }
     
-    public YouTubeAnalytics(YouTubeAnalyticsDTO yt) {
+    public YouTubeAnalytics(YouTubeAnalyticsDTO yt, EntityManager em) {
         this.channelId = yt.getId();
         this.views = yt.getViews();
         this.subscribers = yt.getSubscribers();
         this.videoCount = yt.getVideoCount();
         this.savedAt = yt.getSavedOnDate();
-        this.savedBy = yt.getSavedBy();
+        this.savedBy = em.find(User.class, yt.getSavedBy());
     }
 
     public String getChannelId() {

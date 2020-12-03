@@ -154,7 +154,7 @@ public class YoutubeFacade {
 
 
         YouTubeAnalyticsDTO youTubeAnalyticsDTO = new YouTubeAnalyticsDTO(youTubeRes,new Date(), user);
-        YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO);
+        YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO, em);
 
         try{
             em.getTransaction().begin();
@@ -181,7 +181,7 @@ public class YoutubeFacade {
         });
         
         if (list.isEmpty()) {
-            throw new NotFound("No content found by id " + channelId);
+            throw new NotFound(channelId);
         }
         
         return list;

@@ -12,6 +12,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -61,13 +62,13 @@ public class TwitchAnalytics implements Serializable {
     public TwitchAnalytics() {
     }
     
-    public TwitchAnalytics(TwitchAnalyticsDTO twitch) {
+    public TwitchAnalytics(TwitchAnalyticsDTO twitch, EntityManager em) {
         this.channelName = twitch.getId();
         game = twitch.getGame();
         views = twitch.getViews();
         followers = twitch.getFollowers();
         savedAt = twitch.getSavedOnDate();
-        savedBy = twitch.getSavedBy();
+        savedBy = em.find(User.class, twitch.getSavedBy());
     }
 
     

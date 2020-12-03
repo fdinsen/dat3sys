@@ -37,4 +37,12 @@ public class YouTubeResource {
     public Response getChannelInfo(@PathParam("id") String id) throws NotFound{
         return Response.ok().entity(GSON.toJson(FACADE.getChannelById(id))).build();
     }
+    
+    @Path("get-analytics/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAnalytics(@PathParam("id") String id) throws NotFound {
+        String gson = GSON.toJson(FACADE.getYouTubeAnalytics(id));
+        return Response.ok().entity(gson).build();
+    }
 }

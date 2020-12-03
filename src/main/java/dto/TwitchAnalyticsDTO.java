@@ -19,7 +19,7 @@ public class TwitchAnalyticsDTO {
     private long views;
     private long followers;
     private Date savedOnDate;
-    private User savedBy;
+    private String savedBy;
 
     public TwitchAnalyticsDTO() {
         savedOnDate = new Date();
@@ -31,7 +31,7 @@ public class TwitchAnalyticsDTO {
         this.views = twitch.getViews();
         this.followers = twitch.getFollowers();
         this.savedOnDate = twitch.getSavedAt();
-        this.savedBy = twitch.getSavedBy();
+        this.savedBy = twitch.getSavedBy().getUserName();
     }
 
     public TwitchAnalyticsDTO(TwitchChannelDTO twitch, Date savedOndate,User savedBy) {
@@ -40,7 +40,7 @@ public class TwitchAnalyticsDTO {
         this.views = twitch.getViews();
         this.followers = twitch.getFollowers();
         this.savedOnDate = savedOndate;
-        this.savedBy = savedBy;
+        this.savedBy = savedBy.getUserName();
     }
 
     public String getId() {
@@ -83,11 +83,11 @@ public class TwitchAnalyticsDTO {
         this.savedOnDate = savedOnDate; 
     }
 
-    public User getSavedBy() {
+    public String getSavedBy() {
         return savedBy;
     }
 
-    public void setSavedBy(User savedBy) {
+    public void setSavedBy(String savedBy) {
         this.savedBy = savedBy;
     }
     

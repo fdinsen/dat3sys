@@ -30,7 +30,7 @@ public class SetupTestAnalytics {
         
         em.getTransaction().begin();
         
-        User user = em.find(User.class, "user");
+        String user = "user";
         
         //YouTube
         YouTubeAnalyticsDTO ytdto1 = new YouTubeAnalyticsDTO();
@@ -55,9 +55,9 @@ public class SetupTestAnalytics {
         ytdto3.setVideoCount(48);
         ytdto3.setSavedBy(user);
         
-        YouTubeAnalytics yt1 = new YouTubeAnalytics(ytdto1);
-        YouTubeAnalytics yt2 = new YouTubeAnalytics(ytdto2);
-        YouTubeAnalytics yt3 = new YouTubeAnalytics(ytdto3);
+        YouTubeAnalytics yt1 = new YouTubeAnalytics(ytdto1, em);
+        YouTubeAnalytics yt2 = new YouTubeAnalytics(ytdto2, em);
+        YouTubeAnalytics yt3 = new YouTubeAnalytics(ytdto3, em);
         
         em.persist(yt1);
         em.persist(yt2);
@@ -71,7 +71,7 @@ public class SetupTestAnalytics {
         
         em.getTransaction().begin();
         
-        User user = em.find(User.class, "user");
+        String user = "user";
         
         //Twitch
         TwitchAnalyticsDTO twitchdto1 = new TwitchAnalyticsDTO();
@@ -96,9 +96,9 @@ public class SetupTestAnalytics {
         twitchdto3.setGame("Persona 5: Royal");
         twitchdto3.setSavedBy(user);
         
-        TwitchAnalytics twitch1 = new TwitchAnalytics(twitchdto1);
-        TwitchAnalytics twitch2 = new TwitchAnalytics(twitchdto2);
-        TwitchAnalytics twitch3 = new TwitchAnalytics(twitchdto3);
+        TwitchAnalytics twitch1 = new TwitchAnalytics(twitchdto1, em);
+        TwitchAnalytics twitch2 = new TwitchAnalytics(twitchdto2, em);
+        TwitchAnalytics twitch3 = new TwitchAnalytics(twitchdto3, em);
         
         em.persist(twitch1);
         em.persist(twitch2);
