@@ -1,6 +1,7 @@
 package facades;
 
 import dto.SearchResultsDTO;
+import dto.YouTubeAnalyticsDTO;
 import dto.YoutubeResultDTO;
 import entities.TwitchAnalytics;
 import entities.YouTubeAnalytics;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import utils.SetupTestAnalytics;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
@@ -35,10 +37,15 @@ public class YoutubeFacadeTest {
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = YoutubeFacade.getYoutubeFacade(emf);
+        SetupTestAnalytics.setUpYTAnalytics(emf);
     }
 
     @AfterAll
     public static void tearDownClass() {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM YouTubeAnalytics");
+        em.getTransaction().commit();
 //        Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
     }
 
@@ -215,6 +222,36 @@ public class YoutubeFacadeTest {
         assertThrows = Assertions.assertThrows(TooRecentSaveException.class, () -> {
             facade.saveYoutubeAnalytics("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
             facade.saveYoutubeAnalytics("UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+    
+    @Test
+    public void testViewYouTubeAnalyticsOnSize() throws NotFound {
+        List<YouTubeAnalyticsDTO> list = facade.getYouTubeAnalytics("UC2C_jShtL725hvbm1arSV9w");
+        int expectedSize = 3;
+        int actualSize = list.size();
+        
+        
+        assertEquals(expectedSize, actualSize);
+    }
+    
+    @Test
+    public void testViewYouTubeAnalyticsNotFound() {
+        NotFound assertThrows;
+
+        assertThrows = Assertions.assertThrows(NotFound.class, () -> {
+            facade.getYouTubeAnalytics("test");
+        });
+        Assertions.assertNotNull(assertThrows);
+    }
+    
+    @Test
+    public void testViewYouTubeAnalyticsNull() {
+        NotFound assertThrows;
+
+        assertThrows = Assertions.assertThrows(NotFound.class, () -> {
+            facade.getYouTubeAnalytics(null);
         });
         Assertions.assertNotNull(assertThrows);
     }
