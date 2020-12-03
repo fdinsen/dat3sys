@@ -6,10 +6,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
@@ -58,11 +55,16 @@ public class TwitchResourceTest {
         httpServer.shutdownNow();
     }
 
-    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
-    @BeforeEach
-    public void setUp() {
+    @AfterEach
+    public void afterEach() {
         EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.createQuery("delete from TwitchAnalytics ").executeUpdate();
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
     @Test
@@ -153,5 +155,37 @@ public class TwitchResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("game", equalTo("League of Legends"));
+    }
+
+    @Test
+    public void testSaveTwitchChannelOnSize() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(1));
+    }
+
+    @Test
+    public void testSaveTwitchChannelOnToRecent() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/27686136");
+
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/27686136").then()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT_409.getStatusCode());
+    }
+
+    @Test
+    public void testSaveTwitchChannelOnNotFound() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/save/999999999").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
 }

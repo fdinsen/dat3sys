@@ -34,7 +34,7 @@ public class TwitchAnalytics implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ta_id;
+    private Long id;
     @Basic(optional = false)
     @NotNull
     @Column(name = "channel_name")

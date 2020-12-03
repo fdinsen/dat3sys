@@ -3,6 +3,7 @@ package rest;
         import com.google.gson.Gson;
         import com.google.gson.GsonBuilder;
         import errorhandling.NoResult;
+        import errorhandling.TooRecentSaveException;
         import facades.TwitchFacade;
         import utils.EMF_Creator;
         import facades.YoutubeFacade;
@@ -35,5 +36,12 @@ public class TwitchResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTwitchChannel(@PathParam("id") String id) throws NoResult {
         return Response.ok().entity(GSON.toJson(FACADE.getTwitchChannel(id))).build();
+    }
+
+    @Path("save/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSaveTwitchChannelAnalytics(@PathParam("id") String id) throws NoResult, TooRecentSaveException {
+        return Response.ok().entity(GSON.toJson(FACADE.saveTwitchAnalytics(id))).build();
     }
 }
