@@ -242,7 +242,8 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("code", equalTo(404))
                 .body("message", equalTo("HTTP 404 Not Found"));
-
+    }
+    
     @Test
     public void testSaveTwitchChannelOnSize() {
         given()
