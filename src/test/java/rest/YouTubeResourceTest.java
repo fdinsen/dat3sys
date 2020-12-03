@@ -1,6 +1,9 @@
 package rest;
 
+import entities.Role;
+import entities.User;
 import facades.YoutubeFacade;
+import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -59,11 +62,16 @@ public class YouTubeResourceTest {
         httpServer.shutdownNow();
     }
 
-    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
-    @BeforeEach
-    public void setUp() {
+    @AfterEach
+    public void afterEach() {
         EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.createQuery("delete from YouTubeAnalytics ").executeUpdate();
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
     @Test
@@ -202,4 +210,35 @@ public class YouTubeResourceTest {
                 .body("message", equalTo("HTTP 404 Not Found"));
     }
 
+    @Test
+    public void testSaveYoutubeChannelOnSize() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(1));
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnToRecent() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw").then()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT_409.getStatusCode());
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnNotFound() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/999999999").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
 }

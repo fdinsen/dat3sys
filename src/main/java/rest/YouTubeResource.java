@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import errorhandling.NoResult;
 import errorhandling.NotFound;
+import errorhandling.TooRecentSaveException;
 import utils.EMF_Creator;
 import facades.YoutubeFacade;
 import javax.persistence.EntityManagerFactory;
@@ -44,5 +45,12 @@ public class YouTubeResource {
     public Response getAnalytics(@PathParam("id") String id) throws NotFound {
         String gson = GSON.toJson(FACADE.getYouTubeAnalytics(id));
         return Response.ok().entity(gson).build();
+    }
+
+    @Path("save/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSaveYoutubeChannelAnalytics(@PathParam("id") String id) throws NoResult, TooRecentSaveException, NotFound {
+        return Response.ok().entity(GSON.toJson(FACADE.saveYoutubeAnalytics(id))).build();
     }
 }
