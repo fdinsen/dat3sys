@@ -114,12 +114,7 @@ public class TwitchFacade {
 
                 TwitchChannelDTO twitchChannelDTO = getTwitchChannel(channelName);
 
-
-                //Temp user
-                User user = em.find(User.class, "user");
-
-
-                TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date(), user);
+                TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date());
                 TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO);
 
                 try{
@@ -147,7 +142,7 @@ public class TwitchFacade {
         });
         
         if (list.isEmpty()) {
-            throw new NotFound("No content found by id " + channelName);
+            throw new NotFound(channelName);
         }
         
         return list;

@@ -30,7 +30,7 @@ public class TwitchFacadeTest {
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = TwitchFacade.getTwitchFacade(emf);
-                SetupTestAnalytics.setUpTwitchAnalytics(emf);
+        SetupTestAnalytics.setUpTwitchAnalytics(emf);
     }
     
     @AfterAll

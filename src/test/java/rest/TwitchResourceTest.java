@@ -16,6 +16,7 @@ import java.net.URI;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import utils.SetupTestAnalytics;
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
 
@@ -49,7 +50,7 @@ public class TwitchResourceTest {
     @AfterAll
     public static void closeTestServer() {
         //System.in.read();
-
+        
         //Don't forget this, if you called its counterpart in @BeforeAll
         EMF_Creator.endREST_TestWithDB();
         httpServer.shutdownNow();
@@ -76,7 +77,7 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("all[0].id", equalTo("27686136"));
     }
-    
+
     @Test
     public void testSearchTwitchOnName() {
         given()
@@ -86,7 +87,7 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("all[0].name", equalTo("SivHD"));
     }
-    
+
     @Test
     public void testSearchTwitchOnPfpUrl() {
         given()
@@ -96,7 +97,7 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("all[0].profilePicUrl", equalTo("https://static-cdn.jtvnw.net/jtv_user_pictures/a0732bbd-393f-4a16-bbe0-ac10a16b69df-profile_image-300x300.png"));
     }
-    
+
     @Test
     public void testSearchTwitchOnEmptyString() {
         given()
@@ -105,7 +106,7 @@ public class TwitchResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
-    
+
     @Test
     public void testSearchTwitchOnNoResults() {
         given()
@@ -115,7 +116,6 @@ public class TwitchResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No results found for search term 'adhouahgbibeqibf8i2n2'"));
     }
-
 
     @Test
     public void testGetTwitchChannelOnID() {
@@ -157,6 +157,94 @@ public class TwitchResourceTest {
                 .body("game", equalTo("League of Legends"));
     }
 
+    @Test
+    public void testGetChannelTitle() {
+        String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/" + pewDiePieID)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("title", equalTo("PewDiePie"));
+    }
+
+    @Test
+    public void testGetChannelViews() {
+        String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/" + pewDiePieID)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("country", equalTo("US"));
+    }
+
+    @Test
+    public void testGetChannelTopicCategories() {
+        String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/" + pewDiePieID)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("topicCategories.size()", equalTo(3));
+    }
+
+    @Test
+    public void testGetChannelError() {
+        String wrongId = "";
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/channel/1111")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("code", equalTo(404))
+                .body("message", equalTo("No content found by id '1111'"));
+    }
+
+    @Test
+    public void testViewTwitchAnalyticsOnSize() {
+        SetupTestAnalytics.setUpTwitchAnalytics(emf);
+        String id = "SivHD";
+        given()
+                .contentType("application/json")
+                .get("/twitch/get-analytics/" + id)
+                .then().assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(3));
+    }
+
+    @Test
+    public void testViewTwitchAnalyticsNoResult() {
+        String id = "hej";
+        given()
+                .contentType("application/json")
+                .get("/twitch/get-analytics/" + id)
+                .then().assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("code", equalTo(404))
+                .body("message", equalTo("No content found by id 'hej'"));
+    }
+
+    @Test
+    public void testViewTwitchAnalyticsNull() {
+        given()
+                .contentType("application/json")
+                .get("/twitch/get-analytics/")
+                .then().assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("code", equalTo(404))
+                .body("message", equalTo("HTTP 404 Not Found"));
+    }
+    
     @Test
     public void testSaveTwitchChannelOnSize() {
         given()

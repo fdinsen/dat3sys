@@ -19,7 +19,6 @@ public class YouTubeAnalyticsDTO {
     private long subscribers;
     private long videoCount;
     private Date savedOnDate;
-    private User savedBy;
 
     public YouTubeAnalyticsDTO() {
         savedOnDate = new Date();
@@ -31,16 +30,14 @@ public class YouTubeAnalyticsDTO {
         subscribers = yt.getSubscribers();
         videoCount = yt.getVideoCount();
         savedOnDate = yt.getSavedAt();
-        savedBy = yt.getSavedBy();
     }
 
-    public YouTubeAnalyticsDTO(YoutubeResultDTO youTubeRes, Date date, User user) {
+    public YouTubeAnalyticsDTO(YoutubeResultDTO youTubeRes, Date date) {
         id = youTubeRes.getId();
         views = youTubeRes.getViews();
         subscribers = youTubeRes.getSubscribers();
         videoCount = youTubeRes.getVideoCount();
         savedOnDate = date;
-        savedBy = user;
     }
 
 
@@ -82,14 +79,6 @@ public class YouTubeAnalyticsDTO {
 
     public void setSavedOnDate(Date savedOnDate) {
         this.savedOnDate = savedOnDate; 
-    }
-
-    public User getSavedBy() {
-        return savedBy;
-    }
-
-    public void setSavedBy(User savedBy) {
-        this.savedBy = savedBy;
     }
     
     

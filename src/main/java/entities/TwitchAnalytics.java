@@ -12,6 +12,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,9 +55,7 @@ public class TwitchAnalytics implements Serializable {
     private long followers;
     @Temporal(TemporalType.DATE)
     private Date savedAt;
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name")
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
-    private User savedBy;
+
 
     public TwitchAnalytics() {
     }
@@ -67,7 +66,6 @@ public class TwitchAnalytics implements Serializable {
         views = twitch.getViews();
         followers = twitch.getFollowers();
         savedAt = twitch.getSavedOnDate();
-        savedBy = twitch.getSavedBy();
     }
 
     
@@ -111,14 +109,6 @@ public class TwitchAnalytics implements Serializable {
 
     public void setSavedAt(Date savedAt) {
         this.savedAt = savedAt;
-    }
-
-    public User getSavedBy() {
-        return savedBy;
-    }
-
-    public void setSavedBy(User savedBy) {
-        this.savedBy = savedBy;
     }
     
     

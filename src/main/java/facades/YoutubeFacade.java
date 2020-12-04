@@ -149,11 +149,7 @@ public class YoutubeFacade {
         YoutubeResultDTO youTubeRes = getChannelById(id);
         youTubeRes.setId(id);
 
-        //Temp user
-        User user = em.find(User.class, "user");
-
-
-        YouTubeAnalyticsDTO youTubeAnalyticsDTO = new YouTubeAnalyticsDTO(youTubeRes,new Date(), user);
+        YouTubeAnalyticsDTO youTubeAnalyticsDTO = new YouTubeAnalyticsDTO(youTubeRes,new Date());
         YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO);
 
         try{
@@ -181,7 +177,7 @@ public class YoutubeFacade {
         });
         
         if (list.isEmpty()) {
-            throw new NotFound("No content found by id " + channelId);
+            throw new NotFound(channelId);
         }
         
         return list;
