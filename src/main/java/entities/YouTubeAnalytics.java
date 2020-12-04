@@ -62,13 +62,13 @@ public class YouTubeAnalytics implements Serializable {
     public YouTubeAnalytics() {
     }
     
-    public YouTubeAnalytics(YouTubeAnalyticsDTO yt, EntityManager em) {
+    public YouTubeAnalytics(YouTubeAnalyticsDTO yt, User user) {
         this.channelId = yt.getId();
         this.views = yt.getViews();
         this.subscribers = yt.getSubscribers();
         this.videoCount = yt.getVideoCount();
         this.savedAt = yt.getSavedOnDate();
-        this.savedBy = em.find(User.class, yt.getSavedBy());
+        this.savedBy = user;
     }
 
     public String getChannelId() {

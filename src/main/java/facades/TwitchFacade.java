@@ -120,7 +120,7 @@ public class TwitchFacade {
 
 
                 TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date(), user);
-                TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO, em);
+                TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO, user);
 
                 try{
                     em.getTransaction().begin();

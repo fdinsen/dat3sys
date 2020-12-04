@@ -154,7 +154,7 @@ public class YoutubeFacade {
 
 
         YouTubeAnalyticsDTO youTubeAnalyticsDTO = new YouTubeAnalyticsDTO(youTubeRes,new Date(), user);
-        YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO, em);
+        YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO, user);
 
         try{
             em.getTransaction().begin();

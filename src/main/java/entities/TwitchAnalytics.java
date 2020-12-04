@@ -62,13 +62,13 @@ public class TwitchAnalytics implements Serializable {
     public TwitchAnalytics() {
     }
     
-    public TwitchAnalytics(TwitchAnalyticsDTO twitch, EntityManager em) {
+    public TwitchAnalytics(TwitchAnalyticsDTO twitch, User user) {
         this.channelName = twitch.getId();
         game = twitch.getGame();
         views = twitch.getViews();
         followers = twitch.getFollowers();
         savedAt = twitch.getSavedOnDate();
-        savedBy = em.find(User.class, twitch.getSavedBy());
+        savedBy = user;
     }
 
     
