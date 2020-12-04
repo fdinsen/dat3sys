@@ -149,12 +149,8 @@ public class YoutubeFacade {
         YoutubeResultDTO youTubeRes = getChannelById(id);
         youTubeRes.setId(id);
 
-        //Temp user
-        User user = em.find(User.class, "user");
-
-
-        YouTubeAnalyticsDTO youTubeAnalyticsDTO = new YouTubeAnalyticsDTO(youTubeRes,new Date(), user);
-        YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO, user);
+        YouTubeAnalyticsDTO youTubeAnalyticsDTO = new YouTubeAnalyticsDTO(youTubeRes,new Date());
+        YouTubeAnalytics youtubeAnalytics = new YouTubeAnalytics(youTubeAnalyticsDTO);
 
         try{
             em.getTransaction().begin();

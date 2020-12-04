@@ -114,13 +114,8 @@ public class TwitchFacade {
 
                 TwitchChannelDTO twitchChannelDTO = getTwitchChannel(channelName);
 
-
-                //Temp user
-                User user = em.find(User.class, "user");
-
-
-                TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date(), user);
-                TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO, user);
+                TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date());
+                TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO);
 
                 try{
                     em.getTransaction().begin();

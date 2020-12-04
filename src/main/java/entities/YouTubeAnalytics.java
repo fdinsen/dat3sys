@@ -55,20 +55,16 @@ public class YouTubeAnalytics implements Serializable {
     private long videoCount;
     @Temporal(TemporalType.DATE)
     private Date savedAt;
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name")
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
-    private User savedBy;
 
     public YouTubeAnalytics() {
     }
     
-    public YouTubeAnalytics(YouTubeAnalyticsDTO yt, User user) {
+    public YouTubeAnalytics(YouTubeAnalyticsDTO yt) {
         this.channelId = yt.getId();
         this.views = yt.getViews();
         this.subscribers = yt.getSubscribers();
         this.videoCount = yt.getVideoCount();
         this.savedAt = yt.getSavedOnDate();
-        this.savedBy = user;
     }
 
     public String getChannelId() {
@@ -109,14 +105,6 @@ public class YouTubeAnalytics implements Serializable {
 
     public void setSavedAt(Date savedAt) {
         this.savedAt = savedAt;
-    }
-
-    public User getSavedBy() {
-        return savedBy;
-    }
-
-    public void setSavedBy(User savedBy) {
-        this.savedBy = savedBy;
     }
     
     

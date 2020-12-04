@@ -55,20 +55,17 @@ public class TwitchAnalytics implements Serializable {
     private long followers;
     @Temporal(TemporalType.DATE)
     private Date savedAt;
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name")
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
-    private User savedBy;
+
 
     public TwitchAnalytics() {
     }
     
-    public TwitchAnalytics(TwitchAnalyticsDTO twitch, User user) {
+    public TwitchAnalytics(TwitchAnalyticsDTO twitch) {
         this.channelName = twitch.getId();
         game = twitch.getGame();
         views = twitch.getViews();
         followers = twitch.getFollowers();
         savedAt = twitch.getSavedOnDate();
-        savedBy = user;
     }
 
     
@@ -112,14 +109,6 @@ public class TwitchAnalytics implements Serializable {
 
     public void setSavedAt(Date savedAt) {
         this.savedAt = savedAt;
-    }
-
-    public User getSavedBy() {
-        return savedBy;
-    }
-
-    public void setSavedBy(User savedBy) {
-        this.savedBy = savedBy;
     }
     
     
