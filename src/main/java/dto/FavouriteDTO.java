@@ -5,6 +5,15 @@ public class FavouriteDTO {
     private String channelId;
     private String service;
 
+    public FavouriteDTO() {
+    }
+
+    public FavouriteDTO(String username, String channelId, String service) {
+        this.username = username;
+        this.channelId = channelId;
+        this.service = service;
+    }
+
     public FavouriteDTO(String channelId, String service) {
         this.channelId = channelId;
         this.service = service;

@@ -209,16 +209,6 @@ public class TwitchFacadeTest {
         Assertions.assertNotNull(assertThrows);
     }
     
-     @Test
-    public void testViewTwitchAnalyticsOnSize() throws NotFound {
-        List<TwitchAnalyticsDTO> list = facade.getTwitchAnalytics("sivHD");
-        int expectedSize = 3;
-        int actualSize = list.size();
-        
-        
-        assertEquals(expectedSize, actualSize);
-    }
-    
     @Test
     public void testViewTwitchAnalyticsNotFound() {
         NotFound assertThrows;

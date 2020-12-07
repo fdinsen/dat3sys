@@ -18,14 +18,14 @@ public class Favourite implements Serializable {
 
     @NotNull
     @Column(name = "service")
-    private String channelName;
+    private String service;
 
     public Favourite() {
     }
 
-    public Favourite(String channelId, String channelName) {
+    public Favourite(String channelId, String service) {
         this.channelId = channelId;
-        this.channelName = channelName;
+        this.service = service;
     }
 
     public String getChannelId() {
@@ -36,11 +36,11 @@ public class Favourite implements Serializable {
         this.channelId = channelId;
     }
 
-    public String getChannelName() {
-        return channelName;
+    public String getService() {
+        return service;
     }
 
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
+    public void setService(String service) {
+        this.service = service;
     }
 }

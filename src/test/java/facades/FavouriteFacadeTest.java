@@ -69,7 +69,7 @@ public class FavouriteFacadeTest {
     public void testSaveFavouriteTwitchSuccess() throws InvalidServiceException, AuthenticationException, InvalidInputException, NoResult, NotFound {
         FavouriteDTO favouriteDTO = new FavouriteDTO("27686136", "twitch");
 
-        List<Favourite> returned = facade.saveFavourite(favouriteDTO, user1.getUserName());
+        List<FavouriteDTO> returned = facade.saveFavourite(favouriteDTO, user1.getUserName());
 
         String actualID = returned.get(0).getChannelId();
 
@@ -80,7 +80,7 @@ public class FavouriteFacadeTest {
     public void testSaveFavouriteYoutubeSuccess() throws InvalidServiceException, AuthenticationException, InvalidInputException, NoResult, NotFound {
         FavouriteDTO favouriteDTO = new FavouriteDTO("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
 
-        List<Favourite> returned = facade.saveFavourite(favouriteDTO, user1.getUserName());
+        List<FavouriteDTO> returned = facade.saveFavourite(favouriteDTO, user1.getUserName());
 
         String actualID = returned.get(0).getChannelId();
 
@@ -93,7 +93,7 @@ public class FavouriteFacadeTest {
         FavouriteDTO favouriteYoutubeDTO = new FavouriteDTO("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
 
         facade.saveFavourite(favouriteTwitchDTO, user2.getUserName());
-        List<Favourite> returned = facade.saveFavourite(favouriteYoutubeDTO, user2.getUserName());
+        List<FavouriteDTO> returned = facade.saveFavourite(favouriteYoutubeDTO, user2.getUserName());
 
         String actualTwitchID = returned.get(0).getChannelId();
         String actualYoutubeID = returned.get(1).getChannelId();
@@ -117,7 +117,7 @@ public class FavouriteFacadeTest {
     public void testSaveFavouriteInvalidUsername() {
         FavouriteDTO favouriteDTO = new FavouriteDTO("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
 
-        NoResultException assertThrows = Assertions.assertThrows(NoResultException.class, () -> {
+        AuthenticationException assertThrows = Assertions.assertThrows(AuthenticationException.class, () -> {
             facade.saveFavourite(favouriteDTO, "invalidUsername");
         });
 

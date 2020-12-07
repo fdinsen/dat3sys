@@ -9,6 +9,7 @@ import security.errorhandling.AuthenticationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FavouriteFacade {
@@ -38,7 +39,7 @@ public class FavouriteFacade {
         return emf.createEntityManager();
     }
 
-    public List<Favourite> saveFavourite(FavouriteDTO favouriteDTO, String username) throws AuthenticationException, InvalidServiceException, InvalidInputException, NoResult, NotFound {
+    public List<FavouriteDTO> saveFavourite(FavouriteDTO favouriteDTO, String username) throws AuthenticationException, InvalidServiceException, InvalidInputException, NoResult, NotFound {
         EntityManager em = getEntityManager();
 
         if(favouriteDTO.getChannelId() == null || favouriteDTO.getChannelId().isEmpty() || favouriteDTO.getService() == null || favouriteDTO.getService().isEmpty()){
@@ -46,39 +47,58 @@ public class FavouriteFacade {
         }
 
         //Check if service type is correct and channel id exist
-        if(favouriteDTO.getService() == "twitch"){
+        if(favouriteDTO.getService().equals("twitch")){
             new TwitchFacade().getTwitchChannel(favouriteDTO.getChannelId());
-        }else if(favouriteDTO.getService() == "youtube"){
+        }else if(favouriteDTO.getService().equals("youtube")){
             new YoutubeFacade().getChannelById(favouriteDTO.getChannelId());
         }else{
             throw new InvalidServiceException(favouriteDTO.getService());
         }
 
-        User user = (User) em.createQuery(
-                "SELECT u FROM User u WHERE u.userName LIKE :username")
-                .setParameter("username", username)
-                .getSingleResult();
-
-        //If current user is found
-        if(user != null){
-            //Add favorite to user favorite list
-            List<Favourite> userFavourites = user.getFavouriteList();
-            Favourite favourite = new Favourite(favouriteDTO.getChannelId(), favouriteDTO.getUsername());
-            userFavourites.add(favourite);
-            user.setFavouriteList(userFavourites);
-
-            try{
-                em.getTransaction().begin();
-                em.persist(user);
-                em.getTransaction().commit();
-            }finally{
-                em.close();
-            }
-
-            return user.getFavouriteList();
-        }else{
-            //No user found
+        User user;
+        try{
+            user = (User) em.createQuery(
+                    "SELECT u FROM User u WHERE u.userName LIKE :username")
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (Exception e) {
             throw new AuthenticationException("Your username is not found");
         }
+
+
+            //Add favorite to user favorite list
+            List<Favourite> userFavourites = user.getFavouriteList();
+            Favourite favourite = new Favourite(favouriteDTO.getChannelId(), favouriteDTO.getService());
+
+        //If the already have added the channel id, do nothing
+            boolean exist = false;
+            for (Favourite favour : userFavourites){
+                if(favour.getChannelId().equals(favourite.getChannelId()) && favour.getService().equals(favourite.getService())){
+                    exist = true;
+                    break;
+                }
+            }
+
+
+            if(!exist){
+                userFavourites.add(favourite);
+                user.setFavouriteList(userFavourites);
+
+                try{
+                    em.getTransaction().begin();
+                    em.persist(user);
+                    em.getTransaction().commit();
+                }finally{
+                    em.close();
+                }
+            }
+
+            List<FavouriteDTO> favouriteDTOList = new LinkedList<>();
+            for (Favourite favour: user.getFavouriteList()){
+                FavouriteDTO favouriteDTO1 = new FavouriteDTO(favour.getChannelId(),favour.getService());
+                favouriteDTOList.add(favouriteDTO1);
+            }
+
+            return favouriteDTOList;
     }
 }
