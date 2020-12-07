@@ -1,0 +1,16 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package errorhandling;
+
+/**
+ *
+ * @author Oliver
+ */
+public class InvalidServiceException extends Exception {
+    public InvalidServiceException(String service) {
+        super(service + " is not a valid Service");
+    }
+}

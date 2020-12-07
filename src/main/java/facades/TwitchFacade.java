@@ -33,7 +33,7 @@ public class TwitchFacade {
     private static Gson GSON = new Gson();
 
     //Private Constructor to ensure Singleton
-    private TwitchFacade() {
+    TwitchFacade() {
     }
 
     /**

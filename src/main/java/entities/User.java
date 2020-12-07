@@ -29,7 +29,7 @@ public class User implements Serializable {
     @ManyToMany
     private List<Role> roleList = new ArrayList<>();
 
-    @OneToMany(targetEntity=Favourite.class)
+    @OneToMany(targetEntity=Favourite.class, cascade = CascadeType.PERSIST)
     private List favouriteList;
 
     public List<String> getRolesAsStrings() {

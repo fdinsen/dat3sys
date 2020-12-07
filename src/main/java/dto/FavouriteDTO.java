@@ -1,11 +1,11 @@
 package dto;
 
-public class favouriteDTO {
+public class FavouriteDTO {
     private String username;
     private String channelId;
     private String service;
 
-    public favouriteDTO(String channelId, String service) {
+    public FavouriteDTO(String channelId, String service) {
         this.channelId = channelId;
         this.service = service;
     }
