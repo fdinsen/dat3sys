@@ -42,7 +42,7 @@ public class FavouriteFacade {
     public List<FavouriteDTO> saveFavourite(FavouriteDTO favouriteDTO, String username) throws AuthenticationException, InvalidServiceException, InvalidInputException, NoResult, NotFound {
         EntityManager em = getEntityManager();
 
-        if(favouriteDTO.getChannelId() == null || favouriteDTO.getChannelId().isEmpty() || favouriteDTO.getService() == null || favouriteDTO.getService().isEmpty()){
+        if(favouriteDTO == null || favouriteDTO.getChannelId() == null || favouriteDTO.getChannelId().isEmpty() || favouriteDTO.getService() == null || favouriteDTO.getService().isEmpty()){
             throw new InvalidInputException();
         }
 
