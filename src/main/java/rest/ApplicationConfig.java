@@ -28,10 +28,11 @@ public class ApplicationConfig extends Application {
         resources.add(errorhandling.TooRecentSaveMapper.class);
         resources.add(errorhandling.UsernameTakenMapper.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
+        resources.add(rest.DemoResource.class);
         resources.add(rest.TwitchResource.class);
+        resources.add(rest.UserResource.class);
         resources.add(rest.YouTubeResource.class);
         resources.add(security.JWTAuthenticationFilter.class);
-        resources.add(security.LoginEndpoint.class);
         resources.add(security.RolesAllowedFilter.class);
         resources.add(security.errorhandling.AuthenticationExceptionMapper.class);
         resources.add(security.errorhandling.NotAuthorizedExceptionMapper.class);
