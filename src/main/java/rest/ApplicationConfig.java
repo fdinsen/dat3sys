@@ -22,9 +22,11 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(cors.CorsFilter.class);
         resources.add(errorhandling.GenericExceptionMapper.class);
+        resources.add(errorhandling.LoginInvalidMapper.class);
         resources.add(errorhandling.NoResultMapper.class);
         resources.add(errorhandling.NotFoundException.class);
         resources.add(errorhandling.TooRecentSaveMapper.class);
+        resources.add(errorhandling.UsernameTakenMapper.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
         resources.add(rest.TwitchResource.class);
         resources.add(rest.YouTubeResource.class);

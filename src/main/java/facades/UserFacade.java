@@ -1,6 +1,10 @@
 package facades;
 
+import dto.UserCredentials;
+import entities.Role;
 import entities.User;
+import errorhandling.LoginInvalid;
+import errorhandling.UsernameTaken;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import security.errorhandling.AuthenticationException;
@@ -41,6 +45,33 @@ public class UserFacade {
             em.close();
         }
         return user;
+    }
+
+    public User createUser(UserCredentials uc) throws LoginInvalid, UsernameTaken {
+        EntityManager em = emf.createEntityManager();
+        if ("".equals(uc.getUsername()) || "".equals(uc.getPassword())) {
+            throw new LoginInvalid("No username or password entered.");
+        }
+        User existingUser = em.find(User.class, uc.getUsername());
+        if (existingUser != null) {
+            throw new UsernameTaken(uc.getUsername()); 
+        } else {
+
+            em.getTransaction().begin();
+            User user = new User(uc.getUsername(), uc.getPassword());
+
+            Role role = em.find(Role.class, "user");
+            if (role == null) {
+                role = new Role("user");
+                em.persist(role);
+            }
+            user.addRole(role);
+            em.persist(user);
+
+            em.getTransaction().commit();
+
+            return user;
+        }
     }
 
 }
