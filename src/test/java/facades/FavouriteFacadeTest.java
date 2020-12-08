@@ -1,6 +1,7 @@
 package facades;
 
 import dto.FavouriteDTO;
+import dto.SearchResultsDTO;
 import entities.Favourite;
 import entities.TwitchAnalytics;
 import entities.User;
@@ -13,6 +14,7 @@ import utils.SetupTestAnalytics;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +40,15 @@ public class FavouriteFacadeTest {
 
         user1 = new User("user1", "user1");
         user2 = new User("user2", "user2");
+
+        Favourite favourite1 = new Favourite("27686136", "twitch");
+        Favourite favourite2 = new Favourite("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
+
+        List<Favourite> favouritesList = new ArrayList<>();
+        favouritesList.add(favourite1);
+        favouritesList.add(favourite2);
+        user1.setFavouriteList(favouritesList);
+
         try {
             em.getTransaction().begin();
             em.persist(user1);
@@ -66,19 +77,19 @@ public class FavouriteFacadeTest {
     }
 
     @Test
-    public void testSaveFavouriteTwitchSuccess() throws InvalidServiceException, AuthenticationException, InvalidInputException, NoResult, NotFound {
-        FavouriteDTO favouriteDTO = new FavouriteDTO("27686136", "twitch");
+    public void testSaveFavouriteYoutubeSuccess() throws InvalidServiceException, AuthenticationException, InvalidInputException, NoResult, NotFound {
+        FavouriteDTO favouriteDTO = new FavouriteDTO("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
 
         List<FavouriteDTO> returned = facade.saveFavourite(favouriteDTO, user1.getUserName());
 
-        String actualID = returned.get(0).getChannelId();
+        String actualID = returned.get(1).getChannelId();
 
         assertEquals(favouriteDTO.getChannelId(), actualID);
     }
 
     @Test
-    public void testSaveFavouriteYoutubeSuccess() throws InvalidServiceException, AuthenticationException, InvalidInputException, NoResult, NotFound {
-        FavouriteDTO favouriteDTO = new FavouriteDTO("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
+    public void testSaveFavouriteTwitchSuccess() throws InvalidServiceException, AuthenticationException, InvalidInputException, NoResult, NotFound {
+        FavouriteDTO favouriteDTO = new FavouriteDTO("27686136", "twitch");
 
         List<FavouriteDTO> returned = facade.saveFavourite(favouriteDTO, user1.getUserName());
 
@@ -163,6 +174,35 @@ public class FavouriteFacadeTest {
 
         NotFound assertThrows = Assertions.assertThrows(NotFound.class, () -> {
             facade.saveFavourite(favouriteDTO, user1.getUserName());
+        });
+
+        Assertions.assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testGetUserFavouritesOnSize() throws InvalidInputException, AuthenticationException, NoResult {
+        int expectedSize = 2;
+
+        List<FavouriteDTO> returned = facade.getUserFavourites(user1.getUserName());
+        int actualSize = returned.size();
+
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Test
+    public void testGetUserFavouritesNoFavourites() throws InvalidInputException, AuthenticationException, NoResult {
+        int expectedSize = 0;
+
+        List<FavouriteDTO> returned = facade.getUserFavourites(user2.getUserName());
+        int actualSize = returned.size();
+
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Test
+    public void testGetUserFavouritesWrongUserName() throws InvalidInputException, AuthenticationException, NoResult {
+        AuthenticationException assertThrows = Assertions.assertThrows(AuthenticationException.class, () -> {
+            facade.getUserFavourites("WrongUserName");
         });
 
         Assertions.assertNotNull(assertThrows);

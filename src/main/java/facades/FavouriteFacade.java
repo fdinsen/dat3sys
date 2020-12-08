@@ -2,15 +2,21 @@ package facades;
 
 import com.google.gson.Gson;
 import dto.FavouriteDTO;
+import dto.TwitchChannelDTO;
 import entities.Favourite;
 import entities.User;
 import errorhandling.*;
 import security.errorhandling.AuthenticationException;
+import utils.HttpUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FavouriteFacade {
     private static FavouriteFacade instance;
@@ -100,5 +106,33 @@ public class FavouriteFacade {
             }
 
             return favouriteDTOList;
+    }
+
+    public List<FavouriteDTO> getUserFavourites(String username) throws NoResult, InvalidInputException, AuthenticationException {
+        if (username == null || "".equals(username)) {
+            throw new InvalidInputException();
+        } else {
+            EntityManager em = getEntityManager();
+
+            //Check if user exist
+            User user;
+            try{
+                user = (User) em.createQuery(
+                        "SELECT u FROM User u WHERE u.userName LIKE :username")
+                        .setParameter("username", username)
+                        .getSingleResult();
+            } catch (Exception e) {
+                throw new AuthenticationException("No User Found");
+            }
+
+            List<Favourite> userFavourites = user.getFavouriteList();
+            List<FavouriteDTO> favouriteDTOList = new ArrayList<>();
+            for (Favourite favour: userFavourites){
+                FavouriteDTO favouriteDTO = new FavouriteDTO(favour.getChannelId(),favour.getService());
+                favouriteDTOList.add(favouriteDTO);
+            }
+
+            return favouriteDTOList;
+        }
     }
 }

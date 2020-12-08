@@ -134,10 +134,11 @@ public class FavouriteFacadeTest {
         securityToken = given()
                 .contentType("application/json")
                 .body(json)
-                //.when().post("/api/login")
-                .when().post("/login")
+                .when().post("/user/login")
                 .then()
                 .extract().path("token");
+
+        System.out.println(securityToken);
     }
 
     @Test
