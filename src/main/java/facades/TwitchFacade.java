@@ -2,21 +2,29 @@ package facades;
 
 import com.google.gson.Gson;
 import dto.SearchResultsDTO;
+import dto.TwitchAnalyticsDTO;
 import dto.TwitchChannelDTO;
+import dto.YouTubeAnalyticsDTO;
 import dto.internaldto.TwitchSearchResultsDTO;
+import entities.TwitchAnalytics;
+import entities.User;
+import entities.YouTubeAnalytics;
 import errorhandling.NoResult;
+import errorhandling.NotFound;
 import java.io.IOException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import errorhandling.TooRecentSaveException;
+import java.util.ArrayList;
+import javax.persistence.TypedQuery;
 import utils.HttpUtils;
 
-/**
- *
- * Rename Class to a relevant name Add add relevant facade methods
- */
 public class TwitchFacade {
 
     private static TwitchFacade instance;
@@ -81,6 +89,63 @@ public class TwitchFacade {
                 throw new NoResult(id);
             }
         }
+    }
+
+    public List<TwitchAnalytics> saveTwitchAnalytics(String channelName) throws NoResult, TooRecentSaveException {
+                EntityManager em = getEntityManager();
+                //check time interval
+                List<TwitchAnalytics>   twitchAnalyticsList = em.createQuery(
+                                        "SELECT ta FROM TwitchAnalytics ta WHERE ta.channelName LIKE :channelName")
+                                        .setParameter("channelName", channelName)
+                                        .getResultList();
+
+                if(twitchAnalyticsList.size() > 0){
+                    //Check if latest entry is older than 1 minute
+                    Date currentDate = new Date();
+                    Date twitchDate = twitchAnalyticsList.get(twitchAnalyticsList.size() - 1).getSavedAt();
+                    long min1 = 60l * 1000;
+                    if(currentDate.before(new Date((twitchDate .getTime() + min1)))){
+                        throw new TooRecentSaveException();
+                    }
+
+                }
+
+
+
+                TwitchChannelDTO twitchChannelDTO = getTwitchChannel(channelName);
+
+                TwitchAnalyticsDTO twitchAnalyticsDTO = new TwitchAnalyticsDTO(twitchChannelDTO,new Date());
+                TwitchAnalytics twitchAnalytics = new TwitchAnalytics(twitchAnalyticsDTO);
+
+                try{
+                    em.getTransaction().begin();
+                    em.persist(twitchAnalytics);
+                    em.getTransaction().commit();
+                }finally{
+                    em.close();
+                }
+                twitchAnalyticsList.add(twitchAnalytics);
+
+
+
+                return twitchAnalyticsList;
+    }
+    
+    public List<TwitchAnalyticsDTO> getTwitchAnalytics(String channelName) throws NotFound {
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<TwitchAnalytics> query = em.createQuery("SELECT twitch FROM TwitchAnalytics twitch WHERE twitch.channelName = :channel ORDER BY twitch.savedAt", TwitchAnalytics.class);
+        query.setParameter("channel", channelName);
+        List<TwitchAnalyticsDTO> list = new ArrayList();
+        
+        query.getResultStream().forEach(element -> {
+            list.add(new TwitchAnalyticsDTO(element));
+        });
+        
+        if (list.isEmpty()) {
+            throw new NotFound(channelName);
+        }
+        
+        return list;
     }
 
 }

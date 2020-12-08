@@ -1,10 +1,12 @@
 package rest;
 
+import entities.Role;
+import entities.User;
 import facades.YoutubeFacade;
+import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
-
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import javax.persistence.EntityManager;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.SetupTestAnalytics;
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
 
@@ -59,14 +62,18 @@ public class YouTubeResourceTest {
         httpServer.shutdownNow();
     }
 
-    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
-    @BeforeEach
-    public void setUp() {
+    @AfterEach
+    public void afterEach() {
         EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.createQuery("delete from YouTubeAnalytics ").executeUpdate();
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
-    
     @Test
     public void testSearchYouTubeOnID() {
         given()
@@ -76,7 +83,7 @@ public class YouTubeResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("all[0].id", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
     }
-    
+
     @Test
     public void testSearchYouTubeOnName() {
         given()
@@ -86,7 +93,7 @@ public class YouTubeResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("all[0].name", equalTo("PewDiePie"));
     }
-    
+
     @Test
     public void testSearchYouTubeOnPfpUrl() {
         given()
@@ -96,7 +103,7 @@ public class YouTubeResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("all[0].profilePicUrl", equalTo("https://yt3.ggpht.com/ytc/AAUvwng76cTETu1glc_8o4UBUiFL2v-m3818ACnK0JLFPA=s800-c-k-c0xffffffff-no-rj-mo"));
     }
-    
+
     @Test
     public void testSearchYouTubeOnEmptyString() {
         given()
@@ -105,7 +112,7 @@ public class YouTubeResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
-    
+
     @Test
     public void testSearchYouTubeOnNoResults() {
         given()
@@ -115,6 +122,7 @@ public class YouTubeResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No results found for search term 'adhou'"));
     }
+
     @Test
     public void testGetChannelTitle() {
         String pewDiePieID = "UC-lHJZR3Gqxm24_Vd_AJ5Yw";
@@ -166,5 +174,72 @@ public class YouTubeResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("code", equalTo(404))
                 .body("message", equalTo("No content found by id '1111'"));
+    }
+
+    @Test
+    public void testViewYouTubeAnalyticsOnSize() {
+        SetupTestAnalytics.setUpYTAnalytics(emf);
+        String id = "UC2C_jShtL725hvbm1arSV9w";
+        given()
+                .contentType("application/json")
+                .get("/youtube/get-analytics/" + id)
+                .then().assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(3));
+    }
+
+    @Test
+    public void testViewYouTubeAnalyticsNoResult() {
+        String id = "hej";
+        given()
+                .contentType("application/json")
+                .get("/youtube/get-analytics/" + id)
+                .then().assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("code", equalTo(404))
+                .body("message", equalTo("No content found by id 'hej'"));
+    }
+
+    @Test
+    public void testViewYouTubeAnalyticsNull() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/get-analytics/")
+                .then().assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("code", equalTo(404))
+                .body("message", equalTo("HTTP 404 Not Found"));
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnSize() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(1));
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnToRecent() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw");
+
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/UC-lHJZR3Gqxm24_Vd_AJ5Yw").then()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT_409.getStatusCode());
+    }
+
+    @Test
+    public void testSaveYoutubeChannelOnNotFound() {
+        given()
+                .contentType("application/json")
+                .get("/youtube/save/999999999").then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
 }
