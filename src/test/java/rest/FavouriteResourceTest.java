@@ -170,7 +170,7 @@ public class FavouriteResourceTest {
                 .when()
                 .post("/user/favourite").then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("[0].channelId", equalTo("27686136"));
+                .body("[1].channelId", equalTo("27686136"));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class FavouriteResourceTest {
                 .when()
                 .post("/user/favourite").then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("[0].channelId", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
+                .body("[1].channelId", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
     }
 
 
@@ -275,26 +275,6 @@ public class FavouriteResourceTest {
     }
 
     @Test
-    public void testSaveFavouriteYoutubeNoneExistingChannelId() {
-        login("user", "user");
-
-        Map<String, Object> jsonAsMap = new HashMap<>();
-        jsonAsMap.put("channelId", "asdasd");
-        jsonAsMap.put("service", "youtube");
-
-
-        given()
-                .contentType("application/json")
-                .accept(ContentType.JSON)
-                .header("x-access-token", securityToken)
-                .body(jsonAsMap)
-                .when()
-                .post("/user/favourite)").then()
-                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
-                .body("message", equalTo("No content found by id 'asdasd'"));
-    }
-
-    @Test
     public void testGetFavouritesSuccessTwitch() {
         login("user", "user");
 
@@ -305,7 +285,7 @@ public class FavouriteResourceTest {
                 .when()
                 .get("/user/favourite").then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("[1].channelId", equalTo("27686136"));
+                .body("[0].channelId", equalTo("27686136"));
     }
 
     @Test
@@ -319,7 +299,7 @@ public class FavouriteResourceTest {
                 .when()
                 .get("/user/favourite").then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("[0].channelId", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
+                .body("[1].channelId", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
     }
 
     @Test
