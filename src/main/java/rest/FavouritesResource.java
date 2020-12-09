@@ -35,10 +35,21 @@ public class FavouritesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
+    @Path("favourite")
     public String saveFavourite(String json) throws NoResult, NotFound, AuthenticationException, InvalidInputException, InvalidServiceException {
         String username = securityContext.getUserPrincipal().getName();
         FavouriteDTO favouriteDTO = GSON.fromJson(json, FavouriteDTO.class);
         List<FavouriteDTO> favouriteDTOList = FACADE.saveFavourite(favouriteDTO, username);
+        return GSON.toJson(favouriteDTOList);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"user", "admin"})
+    @Path("favourite")
+    public String getFavourites(String json) throws NoResult, NotFound, AuthenticationException, InvalidInputException, InvalidServiceException {
+        String username = securityContext.getUserPrincipal().getName();
+        List<FavouriteDTO> favouriteDTOList = FACADE.getUserFavourites(username);
         return GSON.toJson(favouriteDTOList);
     }
 }

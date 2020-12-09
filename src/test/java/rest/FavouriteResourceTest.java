@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import entities.Favourite;
 import entities.Role;
 import entities.User;
 import io.restassured.RestAssured;
@@ -19,13 +20,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class FavouriteFacadeTest {
+public class FavouriteResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
 
@@ -90,6 +93,16 @@ public class FavouriteFacadeTest {
             Role adminRole = new Role("admin");
             User user = new User("user", "user");
             user.addRole(userRole);
+
+            Favourite favourite1 = new Favourite("27686136", "twitch");
+            Favourite favourite2 = new Favourite("UC-lHJZR3Gqxm24_Vd_AJ5Yw", "youtube");
+
+            List<Favourite> favouritesList = new ArrayList<>();
+            favouritesList.add(favourite1);
+            favouritesList.add(favourite2);
+            user.setFavouriteList(favouritesList);
+
+
             User admin = new User("admin", "admin");
             admin.addRole(adminRole);
             User both = new User("user_admin", "user_admin");
@@ -155,7 +168,7 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite").then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("[0].channelId", equalTo("27686136"));
     }
@@ -174,7 +187,7 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite").then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("[0].channelId", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
     }
@@ -195,7 +208,7 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite").then()
                 .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
                 .body("message", equalTo("invalidHERE is not a valid Service"));
     }
@@ -215,7 +228,7 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite").then()
                 .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
                 .body("message", equalTo("Invalid input. Please try again!"));
     }
@@ -236,7 +249,7 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite").then()
                 .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
                 .body("message", equalTo("Invalid input. Please try again!"));
     }
@@ -256,7 +269,7 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite").then()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No results found for search term '999999999'"));
     }
@@ -276,8 +289,50 @@ public class FavouriteFacadeTest {
                 .header("x-access-token", securityToken)
                 .body(jsonAsMap)
                 .when()
-                .post("/user").then()
+                .post("/user/favourite)").then()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No content found by id 'asdasd'"));
+    }
+
+    @Test
+    public void testGetFavouritesSuccessTwitch() {
+        login("user", "user");
+
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/user/favourite").then()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("[1].channelId", equalTo("27686136"));
+    }
+
+    @Test
+    public void testGetFavouritesSuccessYoutube() {
+        login("user", "user");
+
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/user/favourite").then()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("[0].channelId", equalTo("UC-lHJZR3Gqxm24_Vd_AJ5Yw"));
+    }
+
+    @Test
+    public void testGetFavouritesNoFavourites() {
+        login("admin", "admin");
+
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/user/favourite").then()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("$.size()", equalTo(0));
     }
 }
