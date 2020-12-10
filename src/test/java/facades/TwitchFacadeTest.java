@@ -37,9 +37,8 @@ public class TwitchFacadeTest {
     public static void tearDownClass() {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.createQuery("DELETE FROM TwitchAnalytics");
+        em.createQuery("DELETE FROM TwitchAnalytics").executeUpdate();
         em.getTransaction().commit();
-//        Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
     }
 
     @Test
@@ -208,16 +207,6 @@ public class TwitchFacadeTest {
             facade.saveTwitchAnalytics("27686136");
         });
         Assertions.assertNotNull(assertThrows);
-    }
-    
-     @Test
-    public void testViewTwitchAnalyticsOnSize() throws NotFound {
-        List<TwitchAnalyticsDTO> list = facade.getTwitchAnalytics("sivHD");
-        int expectedSize = 3;
-        int actualSize = list.size();
-        
-        
-        assertEquals(expectedSize, actualSize);
     }
     
     @Test

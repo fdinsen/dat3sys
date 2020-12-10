@@ -36,7 +36,7 @@ public class YoutubeFacade {
     private static boolean runningThroughGrizzly = false;
 
     //Private Constructor to ensure Singleton
-    private YoutubeFacade() {
+    YoutubeFacade() {
     }
 
     /**
